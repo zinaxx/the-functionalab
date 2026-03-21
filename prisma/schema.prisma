@@ -1,0 +1,227 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─── Enums ─────────────────────────────────────────────────────────
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum ClassStyle {
+  HATHA
+  VINYASA
+  YIN
+  ASHTANGA
+  RESTORATIVE
+  KUNDALINI
+  POWER
+  PRENATAL
+  MEDITATION
+}
+
+enum ClassLevel {
+  ALL_LEVELS
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum ClassStatus {
+  SCHEDULED
+  CANCELLED
+  COMPLETED
+}
+
+enum BookingStatus {
+  CONFIRMED
+  CANCELLED
+  LATE_CANCELLED
+  NO_SHOW
+}
+
+enum MembershipType {
+  MONTHLY_UNLIMITED
+}
+
+enum MembershipStatus {
+  ACTIVE
+  CANCELLED
+  PAST_DUE
+  EXPIRED
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+  REFUNDED
+}
+
+enum PaymentType {
+  CLASS_PACK
+  MEMBERSHIP
+  DROP_IN
+}
+
+// ─── Models ────────────────────────────────────────────────────────
+
+model User {
+  id                String    @id @default(cuid())
+  supabaseId        String    @unique
+  email             String    @unique
+  name              String?
+  avatarUrl         String?
+  phone             String?
+  healthNotes       String?
+  role              Role      @default(USER)
+  creditBalance     Int       @default(0)
+  stripeCustomerId  String?   @unique
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  bookings          Booking[]
+  waitlistEntries   WaitlistEntry[]
+  membership        Membership?
+  payments          Payment[]
+
+  @@map("users")
+}
+
+model Instructor {
+  id          String      @id @default(cuid())
+  name        String
+  bio         String?
+  avatarUrl   String?
+  specialties ClassStyle[]
+  instagram   String?
+  active      Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  classes     YogaClass[]
+
+  @@map("instructors")
+}
+
+model YogaClass {
+  id            String      @id @default(cuid())
+  title         String
+  description   String?
+  style         ClassStyle
+  level         ClassLevel  @default(ALL_LEVELS)
+  durationMins  Int         @default(60)
+  capacity      Int         @default(20)
+  startsAt      DateTime
+  endsAt        DateTime
+  room          String?
+  imageUrl      String?
+  creditCost    Int         @default(1)
+  status        ClassStatus @default(SCHEDULED)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  instructorId  String
+  instructor    Instructor  @relation(fields: [instructorId], references: [id])
+
+  bookings      Booking[]
+  waitlist      WaitlistEntry[]
+
+  @@index([startsAt])
+  @@index([style])
+  @@index([instructorId])
+  @@map("yoga_classes")
+}
+
+model Booking {
+  id            String        @id @default(cuid())
+  status        BookingStatus @default(CONFIRMED)
+  checkedIn     Boolean       @default(false)
+  creditsUsed   Int           @default(1)
+  cancelledAt   DateTime?
+  cancelReason  String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  userId        String
+  user          User          @relation(fields: [userId], references: [id])
+  classId       String
+  yogaClass     YogaClass     @relation(fields: [classId], references: [id])
+
+  @@unique([userId, classId])
+  @@index([classId])
+  @@index([userId])
+  @@map("bookings")
+}
+
+model WaitlistEntry {
+  id        String   @id @default(cuid())
+  position  Int
+  notified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  classId   String
+  yogaClass YogaClass @relation(fields: [classId], references: [id])
+
+  @@unique([userId, classId])
+  @@index([classId, position])
+  @@map("waitlist_entries")
+}
+
+model Membership {
+  id                    String           @id @default(cuid())
+  type                  MembershipType   @default(MONTHLY_UNLIMITED)
+  status                MembershipStatus @default(ACTIVE)
+  stripeSubscriptionId  String?          @unique
+  currentPeriodStart    DateTime?
+  currentPeriodEnd      DateTime?
+  cancelAtPeriodEnd     Boolean          @default(false)
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
+
+  userId                String           @unique
+  user                  User             @relation(fields: [userId], references: [id])
+
+  @@map("memberships")
+}
+
+model Payment {
+  id               String        @id @default(cuid())
+  stripePaymentId  String?       @unique
+  amount           Int           // in cents
+  currency         String        @default("eur")
+  status           PaymentStatus @default(PENDING)
+  type             PaymentType
+  creditsAdded     Int           @default(0)
+  description      String?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  userId           String
+  user             User          @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@map("payments")
+}
+
+model StudioSettings {
+  id                        String  @id @default("default")
+  cancellationWindowHours   Int     @default(12)
+  maxWaitlistSize           Int     @default(10)
+  lateCancelPenalty         Boolean @default(true)
+  bookingOpenDaysInAdvance  Int     @default(14)
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
+
+  @@map("studio_settings")
+}

@@ -1,0 +1,220 @@
+import { resend, FROM_EMAIL } from "@/lib/resend";
+import { format } from "date-fns";
+
+function studioEmailWrapper(content: string): string {
+  return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <style>
+        body { font-family: 'DM Sans', Arial, sans-serif; background: #FDFBF8; margin: 0; padding: 0; color: #292524; }
+        .container { max-width: 560px; margin: 40px auto; background: white; border-radius: 16px; overflow: hidden; border: 1px solid #E7E5E4; }
+        .header { background: #5a8754; padding: 32px; text-align: center; }
+        .header h1 { color: white; font-family: Georgia, serif; font-size: 24px; font-weight: 400; margin: 0; letter-spacing: 0.05em; }
+        .header p { color: rgba(255,255,255,0.8); font-size: 12px; margin: 4px 0 0; letter-spacing: 0.1em; text-transform: uppercase; }
+        .body { padding: 36px 40px; }
+        .body p { font-size: 15px; line-height: 1.7; color: #44403C; margin: 0 0 16px; }
+        .detail-card { background: #F5F5F4; border-radius: 12px; padding: 20px 24px; margin: 24px 0; }
+        .detail-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #E7E5E4; font-size: 14px; }
+        .detail-row:last-child { border-bottom: none; }
+        .detail-label { color: #78716C; }
+        .detail-value { color: #1C1917; font-weight: 500; }
+        .cta-button { display: inline-block; background: #5a8754; color: white; text-decoration: none; padding: 12px 28px; border-radius: 24px; font-size: 14px; font-weight: 500; margin: 8px 0; }
+        .footer { padding: 24px 40px; border-top: 1px solid #E7E5E4; text-align: center; font-size: 12px; color: #A8A29E; }
+        .footer a { color: #5a8754; text-decoration: none; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1>Zen Studio</h1>
+          <p>Paris · Yoga & Movement</p>
+        </div>
+        <div class="body">${content}</div>
+        <div class="footer">
+          <p>12 Rue de la Paix, 75001 Paris · <a href="mailto:hello@zenstudio.com">hello@zenstudio.com</a></p>
+          <p><a href="${process.env.NEXT_PUBLIC_APP_URL}">zenstudio.com</a></p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+}
+
+interface ClassEmailData {
+  userName: string;
+  userEmail: string;
+  className: string;
+  instructorName: string;
+  startsAt: Date;
+  endsAt: Date;
+  room: string;
+}
+
+export async function sendBookingConfirmedEmail(data: ClassEmailData) {
+  const timeStr = `${format(data.startsAt, "EEEE, MMMM d")} · ${format(data.startsAt, "h:mm a")} – ${format(data.endsAt, "h:mm a")}`;
+  const html = studioEmailWrapper(`
+    <p>Hi ${data.userName || "there"},</p>
+    <p>You're all set! We're looking forward to seeing you in class.</p>
+    <div class="detail-card">
+      <div class="detail-row"><span class="detail-label">Class</span><span class="detail-value">${data.className}</span></div>
+      <div class="detail-row"><span class="detail-label">Instructor</span><span class="detail-value">${data.instructorName}</span></div>
+      <div class="detail-row"><span class="detail-label">When</span><span class="detail-value">${timeStr}</span></div>
+      <div class="detail-row"><span class="detail-label">Room</span><span class="detail-value">${data.room || "TBA"}</span></div>
+    </div>
+    <p>Please arrive 5–10 minutes early. Mats and props are provided.</p>
+    <p>Need to cancel? You can do so up to 12 hours before class from your dashboard — no charge applies.</p>
+    <p style="text-align:center; margin-top: 28px;">
+      <a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard" class="cta-button">View my bookings</a>
+    </p>
+    <p style="margin-top: 24px;">Namaste,<br /><strong>The Zen Studio team</strong></p>
+  `);
+
+  return resend.emails.send({
+    from: FROM_EMAIL,
+    to: data.userEmail,
+    subject: `You're booked in — ${data.className}`,
+    html,
+  });
+}
+
+export async function sendClassReminderEmail(data: ClassEmailData) {
+  const timeStr = `${format(data.startsAt, "h:mm a")} – ${format(data.endsAt, "h:mm a")}`;
+  const html = studioEmailWrapper(`
+    <p>Hi ${data.userName || "there"},</p>
+    <p>Just a friendly reminder — your class is <strong>tomorrow</strong>!</p>
+    <div class="detail-card">
+      <div class="detail-row"><span class="detail-label">Class</span><span class="detail-value">${data.className}</span></div>
+      <div class="detail-row"><span class="detail-label">Instructor</span><span class="detail-value">${data.instructorName}</span></div>
+      <div class="detail-row"><span class="detail-label">Time</span><span class="detail-value">${timeStr}</span></div>
+      <div class="detail-row"><span class="detail-label">Room</span><span class="detail-value">${data.room || "TBA"}</span></div>
+    </div>
+    <p>We'll see you on the mat. Don't forget to bring water!</p>
+    <p style="margin-top: 24px;">Namaste,<br /><strong>The Zen Studio team</strong></p>
+  `);
+
+  return resend.emails.send({
+    from: FROM_EMAIL,
+    to: data.userEmail,
+    subject: `See you tomorrow — ${data.className}`,
+    html,
+  });
+}
+
+export async function sendWaitlistPromotedEmail(data: ClassEmailData) {
+  const timeStr = `${format(data.startsAt, "EEEE, MMMM d")} · ${format(data.startsAt, "h:mm a")} – ${format(data.endsAt, "h:mm a")}`;
+  const html = studioEmailWrapper(`
+    <p>Hi ${data.userName || "there"},</p>
+    <p>Great news — a spot just opened up in <strong>${data.className}</strong> and you're in!</p>
+    <div class="detail-card">
+      <div class="detail-row"><span class="detail-label">Class</span><span class="detail-value">${data.className}</span></div>
+      <div class="detail-row"><span class="detail-label">Instructor</span><span class="detail-value">${data.instructorName}</span></div>
+      <div class="detail-row"><span class="detail-label">When</span><span class="detail-value">${timeStr}</span></div>
+      <div class="detail-row"><span class="detail-label">Room</span><span class="detail-value">${data.room || "TBA"}</span></div>
+    </div>
+    <p>Your booking is confirmed — no action needed. See you in class!</p>
+    <p style="text-align:center; margin-top: 28px;">
+      <a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard" class="cta-button">View my bookings</a>
+    </p>
+    <p style="margin-top: 24px;">Namaste,<br /><strong>The Zen Studio team</strong></p>
+  `);
+
+  return resend.emails.send({
+    from: FROM_EMAIL,
+    to: data.userEmail,
+    subject: `A spot opened up — ${data.className}`,
+    html,
+  });
+}
+
+export async function sendLateCancelEmail(data: ClassEmailData) {
+  const html = studioEmailWrapper(`
+    <p>Hi ${data.userName || "there"},</p>
+    <p>You've cancelled your booking for <strong>${data.className}</strong> within 12 hours of the class start time.</p>
+    <p>Per our late cancellation policy, your credit for this class <strong>has not been refunded</strong>.</p>
+    <p>If you believe this was an error or have an exceptional circumstance, please contact us at <a href="mailto:hello@zenstudio.com" style="color:#5a8754;">hello@zenstudio.com</a>.</p>
+    <p style="margin-top: 24px;">Namaste,<br /><strong>The Zen Studio team</strong></p>
+  `);
+
+  return resend.emails.send({
+    from: FROM_EMAIL,
+    to: data.userEmail,
+    subject: `Late cancellation — credit not refunded`,
+    html,
+  });
+}
+
+export async function sendPaymentConfirmedEmail({
+  userName,
+  userEmail,
+  description,
+  amount,
+  creditsAdded,
+}: {
+  userName: string;
+  userEmail: string;
+  description: string;
+  amount: number; // in cents
+  creditsAdded: number;
+}) {
+  const amountFormatted = new Intl.NumberFormat("fr-FR", {
+    style: "currency",
+    currency: "EUR",
+  }).format(amount / 100);
+
+  const html = studioEmailWrapper(`
+    <p>Hi ${userName || "there"},</p>
+    <p>Your payment has been confirmed. Here's your receipt:</p>
+    <div class="detail-card">
+      <div class="detail-row"><span class="detail-label">Description</span><span class="detail-value">${description}</span></div>
+      <div class="detail-row"><span class="detail-label">Amount</span><span class="detail-value">${amountFormatted}</span></div>
+      ${creditsAdded > 0 ? `<div class="detail-row"><span class="detail-label">Credits added</span><span class="detail-value">${creditsAdded} credits</span></div>` : ""}
+    </div>
+    <p style="text-align:center; margin-top: 28px;">
+      <a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard/membership" class="cta-button">View my account</a>
+    </p>
+    <p style="margin-top: 24px;">Namaste,<br /><strong>The Zen Studio team</strong></p>
+  `);
+
+  return resend.emails.send({
+    from: FROM_EMAIL,
+    to: userEmail,
+    subject: `Payment confirmed — ${description}`,
+    html,
+  });
+}
+
+export async function sendClassCancelledEmail({
+  userName,
+  userEmail,
+  className,
+  startsAt,
+  creditsRefunded,
+}: {
+  userName: string;
+  userEmail: string;
+  className: string;
+  startsAt: Date;
+  creditsRefunded: number;
+}) {
+  const dateStr = format(startsAt, "EEEE, MMMM d 'at' h:mm a");
+  const html = studioEmailWrapper(`
+    <p>Hi ${userName || "there"},</p>
+    <p>We're sorry to let you know that <strong>${className}</strong> on ${dateStr} has been cancelled.</p>
+    ${creditsRefunded > 0 ? `<p>Your <strong>${creditsRefunded} credit${creditsRefunded > 1 ? "s" : ""}</strong> have been returned to your account.</p>` : ""}
+    <p>We apologise for the inconvenience. Please check our schedule for alternative classes.</p>
+    <p style="text-align:center; margin-top: 28px;">
+      <a href="${process.env.NEXT_PUBLIC_APP_URL}/schedule" class="cta-button">Browse schedule</a>
+    </p>
+    <p style="margin-top: 24px;">Namaste,<br /><strong>The Zen Studio team</strong></p>
+  `);
+
+  return resend.emails.send({
+    from: FROM_EMAIL,
+    to: userEmail,
+    subject: `Class cancelled — ${className}`,
+    html,
+  });
+}
