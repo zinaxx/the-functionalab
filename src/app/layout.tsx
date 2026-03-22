@@ -1,36 +1,36 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, DM_Sans } from "next/font/google";
+import { Barlow_Condensed, Barlow } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { Toaster } from "@/components/ui/toaster";
 
-const cormorant = Cormorant_Garamond({
+const barlowCondensed = Barlow_Condensed({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-cormorant",
+  weight: ["300", "400", "500", "600", "700", "800"],
+  variable: "--font-barlow-condensed",
   display: "swap",
 });
 
-const dmSans = DM_Sans({
+const barlow = Barlow({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-dm-sans",
+  variable: "--font-barlow",
   display: "swap",
 });
 
 export const metadata: Metadata = {
   title: {
-    default: "Zen Studio — Yoga in the Heart of Paris",
-    template: "%s | Zen Studio",
+    default: "The FunctionaLab — Train For Life",
+    template: "%s | The FunctionaLab",
   },
   description:
-    "A boutique yoga studio offering Hatha, Vinyasa, Yin, and more. Book classes online, manage your membership, and find your balance.",
+    "Jounieh's premier functional fitness gym. HIIT, Spinning, Boxing, Sculpt and more.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"),
   openGraph: {
-    title: "Zen Studio — Yoga in the Heart of Paris",
+    title: "The FunctionaLab — Train For Life",
     description:
-      "A boutique yoga studio offering Hatha, Vinyasa, Yin, and more. Book classes online and find your balance.",
+      "Jounieh's premier functional fitness gym. HIIT, Spinning, Boxing, Sculpt and more.",
     type: "website",
     locale: "en_US",
   },
@@ -42,8 +42,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${cormorant.variable} ${dmSans.variable}`}>
-      <body className="min-h-screen bg-cream-50">
+    <html lang="en" className={`${barlowCondensed.variable} ${barlow.variable}`}>
+      <body className="min-h-screen bg-[#0A0A0A]">
         <Navbar />
         <main className="min-h-screen">{children}</main>
         <Footer />

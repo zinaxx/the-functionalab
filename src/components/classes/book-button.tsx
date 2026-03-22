@@ -168,7 +168,7 @@ export function BookButton({
         <div className="space-y-3">
           <Button
             variant="secondary"
-            className="w-full bg-sage-50 text-sage-700 border border-sage-200 hover:bg-sage-100 cursor-default"
+            className="w-full bg-[#fd5227]/10 text-[#fd5227] border border-[#fd5227]/30 hover:bg-[#fd5227]/10 cursor-default"
             size="lg"
             disabled
           >
@@ -190,7 +190,7 @@ export function BookButton({
               <DialogTitle>Cancel your booking?</DialogTitle>
               <DialogDescription>
                 {isLateCancel ? (
-                  <span className="flex items-start gap-2 mt-2 p-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-800">
+                  <span className="flex items-start gap-2 mt-2 p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl text-amber-400">
                     <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0" />
                     This is a <strong>late cancellation</strong> — within 12 hours of class. Your credit will <strong>not</strong> be refunded.
                   </span>
@@ -257,8 +257,8 @@ export function BookButton({
   if (!canAfford) {
     return (
       <div className="space-y-3">
-        <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl">
-          <p className="text-sm text-amber-800 font-body">
+        <div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl">
+          <p className="text-sm text-amber-400 font-body">
             You need {creditCost} credit{creditCost > 1 ? "s" : ""} to book. You have {creditBalance}.
           </p>
         </div>

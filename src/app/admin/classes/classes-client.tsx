@@ -61,7 +61,7 @@ interface ClassFormData {
 const defaultForm: ClassFormData = {
   title: "",
   description: "",
-  style: ClassStyle.HATHA,
+  style: ClassStyle.HIIT,
   level: ClassLevel.ALL_LEVELS,
   instructorId: "",
   startsAt: "",
@@ -179,10 +179,10 @@ export function AdminClassesClient({ classes, instructors }: Props) {
         </Button>
       </div>
 
-      <div className="rounded-2xl bg-white border border-stone-200 overflow-hidden">
+      <div className="rounded-2xl bg-[#141414] border border-[#2A2A2A] overflow-hidden">
         <table className="w-full text-sm font-body">
           <thead>
-            <tr className="border-b border-stone-100 bg-stone-50">
+            <tr className="border-b border-[#2A2A2A] bg-[#1A1A1A]">
               <th className="text-left px-5 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wide">Class</th>
               <th className="text-left px-5 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wide hidden md:table-cell">When</th>
               <th className="text-left px-5 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wide hidden lg:table-cell">Bookings</th>
@@ -190,23 +190,23 @@ export function AdminClassesClient({ classes, instructors }: Props) {
               <th className="px-5 py-3" />
             </tr>
           </thead>
-          <tbody className="divide-y divide-stone-100">
+          <tbody className="divide-y divide-[#2A2A2A]">
             {classes.map((cls) => (
-              <tr key={cls.id} className="hover:bg-stone-50 transition-colors">
+              <tr key={cls.id} className="hover:bg-[#1A1A1A] transition-colors">
                 <td className="px-5 py-3">
                   <div>
                     <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium mr-2 ${CLASS_STYLE_COLORS[cls.style]}`}>
                       {CLASS_STYLE_LABELS[cls.style]}
                     </span>
-                    <span className="font-medium text-stone-800">{cls.title}</span>
-                    <p className="text-xs text-stone-400 mt-0.5">{cls.instructor.name}</p>
+                    <span className="font-medium text-white">{cls.title}</span>
+                    <p className="text-xs text-stone-500 mt-0.5">{cls.instructor.name}</p>
                   </div>
                 </td>
-                <td className="px-5 py-3 text-stone-600 hidden md:table-cell">
+                <td className="px-5 py-3 text-stone-300 hidden md:table-cell">
                   {format(new Date(cls.startsAt), "EEE, MMM d · HH:mm")}
                 </td>
                 <td className="px-5 py-3 hidden lg:table-cell">
-                  <span className={`${cls._count.bookings >= cls.capacity ? "text-red-600" : "text-stone-600"}`}>
+                  <span className={`${cls._count.bookings >= cls.capacity ? "text-red-400" : "text-stone-300"}`}>
                     {cls._count.bookings}/{cls.capacity}
                   </span>
                 </td>
@@ -215,10 +215,10 @@ export function AdminClassesClient({ classes, instructors }: Props) {
                     variant="outline"
                     className={
                       cls.status === "SCHEDULED"
-                        ? "text-sage-700 border-sage-200 bg-sage-50"
+                        ? "text-[#fd5227] border-[#fd5227]/30 bg-[#fd5227]/10"
                         : cls.status === "CANCELLED"
-                        ? "text-red-700 border-red-200 bg-red-50"
-                        : "text-stone-500 border-stone-200"
+                        ? "text-red-400 border-red-500/30 bg-red-500/10"
+                        : "text-stone-400 border-[#2A2A2A]"
                     }
                   >
                     {cls.status.toLowerCase()}
@@ -226,17 +226,17 @@ export function AdminClassesClient({ classes, instructors }: Props) {
                 </td>
                 <td className="px-5 py-3">
                   <div className="flex items-center gap-1 justify-end">
-                    <Button variant="ghost" size="icon" onClick={() => openEdit(cls)}>
+                    <Button variant="ghost" size="icon" className="text-stone-400 hover:text-white" onClick={() => openEdit(cls)}>
                       <Pencil className="h-3.5 w-3.5" />
                     </Button>
-                    <Button variant="ghost" size="icon" onClick={() => openDuplicate(cls)}>
+                    <Button variant="ghost" size="icon" className="text-stone-400 hover:text-white" onClick={() => openDuplicate(cls)}>
                       <Copy className="h-3.5 w-3.5" />
                     </Button>
                     {cls.status === "SCHEDULED" && (
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="text-red-400 hover:text-red-600 hover:bg-red-50"
+                        className="text-red-500 hover:text-red-400 hover:bg-red-500/10"
                         onClick={() => handleCancel(cls.id)}
                         disabled={cancellingId === cls.id}
                       >
@@ -265,7 +265,7 @@ export function AdminClassesClient({ classes, instructors }: Props) {
           <div className="space-y-4 py-2">
             <div className="space-y-1.5">
               <Label>Title</Label>
-              <Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="Morning Hatha Flow" />
+              <Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="Morning CrossFit WOD" />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
@@ -343,7 +343,7 @@ export function AdminClassesClient({ classes, instructors }: Props) {
 
             <div className="space-y-1.5">
               <Label>Room</Label>
-              <Input value={form.room} onChange={(e) => setForm({ ...form, room: e.target.value })} placeholder="Salle Lotus" />
+              <Input value={form.room} onChange={(e) => setForm({ ...form, room: e.target.value })} placeholder="Main Floor" />
             </div>
 
             <div className="space-y-1.5">

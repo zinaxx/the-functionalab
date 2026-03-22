@@ -10,27 +10,25 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        /* ── Zen Studio palette ── */
-        sage: {
-          50: "#f4f7f3",
-          100: "#e6ede4",
-          200: "#cddbc9",
-          300: "#a8c1a2",
-          400: "#7da375",
-          500: "#5a8754",
-          600: "#466c41",
-          700: "#385635",
-          800: "#2f462c",
-          900: "#273a25",
-          950: "#131f12",
+        /* ── The FunctionalLab palette ── */
+        brand: '#fd5227',
+        orange: {
+          50: '#fff4f0',
+          100: '#ffe8df',
+          200: '#ffd0be',
+          300: '#ffb09a',
+          400: '#fe8a6b',
+          500: '#fd5227',
+          600: '#e03d10',
+          700: '#b82f0b',
+          800: '#8c240a',
+          900: '#6b1c09',
         },
-        cream: {
-          50: "#FDFBF8",
-          100: "#FAF6EF",
-          200: "#F5EDE0",
-          300: "#EDE0CC",
-          400: "#E2CEB2",
-          500: "#D4B896",
+        dark: {
+          50: '#1A1A1A',
+          100: '#141414',
+          200: '#0F0F0F',
+          300: '#0A0A0A',
         },
         stone: {
           50: "#FAFAF9",
@@ -80,8 +78,8 @@ const config: Config = {
         },
       },
       fontFamily: {
-        display: ["var(--font-cormorant)", "Cormorant Garamond", "serif"],
-        body: ["var(--font-dm-sans)", "DM Sans", "sans-serif"],
+        display: ["var(--font-barlow-condensed)", "Barlow Condensed", "sans-serif"],
+        body: ["var(--font-barlow)", "Barlow", "sans-serif"],
       },
       borderRadius: {
         lg: "var(--radius)",

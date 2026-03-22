@@ -42,52 +42,52 @@ export default async function DashboardPage() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="font-display text-4xl font-light text-stone-800">
+        <h1 className="font-display text-4xl font-light text-white">
           Welcome back{dbUser.name ? `, ${dbUser.name.split(" ")[0]}` : ""}
         </h1>
-        <p className="font-body text-stone-500 mt-1">Here&apos;s your practice at a glance.</p>
+        <p className="font-body text-stone-500 mt-1">Here&apos;s your training at a glance.</p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        <div className="rounded-2xl bg-white border border-stone-200 p-5">
+        <div className="rounded-2xl bg-[#141414] border border-[#2A2A2A] p-5">
           <div className="flex items-center gap-2 mb-2">
-            <CreditCard className="h-4 w-4 text-sage-500" />
-            <span className="text-xs font-body text-stone-400 uppercase tracking-wide">Credits</span>
+            <CreditCard className="h-4 w-4 text-[#fd5227]" />
+            <span className="text-xs font-body text-stone-500 uppercase tracking-wide">Credits</span>
           </div>
-          <p className="font-display text-3xl font-light text-stone-800">{dbUser.creditBalance}</p>
-          <Link href="/pricing" className="text-xs text-sage-600 hover:text-sage-700 font-body mt-1 inline-block">
+          <p className="font-display text-3xl font-light text-white">{dbUser.creditBalance}</p>
+          <Link href="/pricing" className="text-xs text-[#fd5227] hover:text-[#fd5227]/80 font-body mt-1 inline-block">
             Buy more →
           </Link>
         </div>
 
-        <div className="rounded-2xl bg-white border border-stone-200 p-5">
+        <div className="rounded-2xl bg-[#141414] border border-[#2A2A2A] p-5">
           <div className="flex items-center gap-2 mb-2">
-            <Calendar className="h-4 w-4 text-sage-500" />
-            <span className="text-xs font-body text-stone-400 uppercase tracking-wide">Upcoming</span>
+            <Calendar className="h-4 w-4 text-[#fd5227]" />
+            <span className="text-xs font-body text-stone-500 uppercase tracking-wide">Upcoming</span>
           </div>
-          <p className="font-display text-3xl font-light text-stone-800">{upcomingBookings.length}</p>
-          <span className="text-xs text-stone-400 font-body">class{upcomingBookings.length !== 1 ? "es" : ""} booked</span>
+          <p className="font-display text-3xl font-light text-white">{upcomingBookings.length}</p>
+          <span className="text-xs text-stone-500 font-body">class{upcomingBookings.length !== 1 ? "es" : ""} booked</span>
         </div>
 
-        <div className="rounded-2xl bg-white border border-stone-200 p-5 col-span-2 md:col-span-1">
+        <div className="rounded-2xl bg-[#141414] border border-[#2A2A2A] p-5 col-span-2 md:col-span-1">
           <div className="flex items-center gap-2 mb-2">
-            <CheckCircle2 className="h-4 w-4 text-sage-500" />
-            <span className="text-xs font-body text-stone-400 uppercase tracking-wide">Membership</span>
+            <CheckCircle2 className="h-4 w-4 text-[#fd5227]" />
+            <span className="text-xs font-body text-stone-500 uppercase tracking-wide">Membership</span>
           </div>
           {membership?.status === "ACTIVE" ? (
             <>
-              <p className="font-display text-lg font-medium text-sage-700">Unlimited Monthly</p>
+              <p className="font-display text-lg font-medium text-[#fd5227]">Unlimited Monthly</p>
               {membership.currentPeriodEnd && (
-                <p className="text-xs text-stone-400 font-body mt-1">
+                <p className="text-xs text-stone-500 font-body mt-1">
                   Renews {format(membership.currentPeriodEnd, "MMM d")}
                 </p>
               )}
             </>
           ) : (
             <>
-              <p className="font-display text-lg text-stone-500">No active plan</p>
-              <Link href="/pricing" className="text-xs text-sage-600 hover:text-sage-700 font-body mt-1 inline-block">
+              <p className="font-display text-lg text-stone-400">No active plan</p>
+              <Link href="/pricing" className="text-xs text-[#fd5227] hover:text-[#fd5227]/80 font-body mt-1 inline-block">
                 View plans →
               </Link>
             </>
@@ -98,21 +98,21 @@ export default async function DashboardPage() {
       {/* Upcoming bookings */}
       <div>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-display text-2xl font-light text-stone-800">Upcoming classes</h2>
+          <h2 className="font-display text-2xl font-light text-white">Upcoming classes</h2>
           <Link href="/dashboard/bookings">
-            <Button variant="ghost" size="sm" className="gap-1 text-stone-500">
+            <Button variant="ghost" size="sm" className="gap-1 text-stone-500 hover:text-white">
               All bookings <ArrowRight className="h-3.5 w-3.5" />
             </Button>
           </Link>
         </div>
 
         {upcomingBookings.length === 0 ? (
-          <div className="rounded-2xl bg-white border border-stone-200 p-10 text-center">
-            <Calendar className="h-10 w-10 text-stone-200 mx-auto mb-3" />
+          <div className="rounded-2xl bg-[#141414] border border-[#2A2A2A] p-10 text-center">
+            <Calendar className="h-10 w-10 text-stone-700 mx-auto mb-3" />
             <p className="font-display text-xl text-stone-400 mb-1">No upcoming classes</p>
-            <p className="font-body text-sm text-stone-400 mb-4">Browse the schedule to find your next class.</p>
+            <p className="font-body text-sm text-stone-500 mb-4">Browse the schedule to find your next class.</p>
             <Link href="/schedule">
-              <Button>Browse schedule</Button>
+              <Button className="bg-[#fd5227] hover:bg-[#e04420] text-white">Browse schedule</Button>
             </Link>
           </div>
         ) : (
@@ -121,7 +121,7 @@ export default async function DashboardPage() {
               <Link
                 key={booking.id}
                 href={`/classes/${booking.classId}`}
-                className="block rounded-2xl bg-white border border-stone-200 p-4 hover:border-sage-300 hover:shadow-sm transition-all group"
+                className="block rounded-2xl bg-[#141414] border border-[#2A2A2A] p-4 hover:border-[#fd5227]/40 hover:shadow-sm transition-all group"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
@@ -132,7 +132,7 @@ export default async function DashboardPage() {
                         {CLASS_STYLE_LABELS[booking.yogaClass.style]}
                       </span>
                     </div>
-                    <h3 className="font-body font-medium text-stone-800 group-hover:text-sage-700 transition-colors">
+                    <h3 className="font-body font-medium text-white group-hover:text-[#fd5227] transition-colors">
                       {booking.yogaClass.title}
                     </h3>
                     <p className="font-body text-sm text-stone-500 mt-0.5">
@@ -140,11 +140,11 @@ export default async function DashboardPage() {
                     </p>
                   </div>
                   <div className="text-right shrink-0">
-                    <p className="font-body text-sm font-medium text-stone-700">
+                    <p className="font-body text-sm font-medium text-stone-300">
                       {formatClassTime(booking.yogaClass.startsAt, booking.yogaClass.endsAt)}
                     </p>
                     {booking.yogaClass.room && (
-                      <p className="font-body text-xs text-stone-400 mt-0.5">{booking.yogaClass.room}</p>
+                      <p className="font-body text-xs text-stone-500 mt-0.5">{booking.yogaClass.room}</p>
                     )}
                   </div>
                 </div>
@@ -157,15 +157,15 @@ export default async function DashboardPage() {
       {/* Quick links */}
       <div className="grid grid-cols-2 gap-3">
         <Link href="/schedule">
-          <div className="rounded-2xl border border-stone-200 bg-white p-4 hover:border-sage-300 transition-colors group cursor-pointer">
-            <Calendar className="h-5 w-5 text-sage-400 mb-2" />
-            <p className="font-body text-sm font-medium text-stone-800 group-hover:text-sage-700">Browse schedule</p>
+          <div className="rounded-2xl border border-[#2A2A2A] bg-[#141414] p-4 hover:border-[#fd5227]/30 transition-colors group cursor-pointer">
+            <Calendar className="h-5 w-5 text-[#fd5227]/60 mb-2" />
+            <p className="font-body text-sm font-medium text-stone-300 group-hover:text-white">Browse schedule</p>
           </div>
         </Link>
         <Link href="/pricing">
-          <div className="rounded-2xl border border-stone-200 bg-white p-4 hover:border-sage-300 transition-colors group cursor-pointer">
-            <CreditCard className="h-5 w-5 text-sage-400 mb-2" />
-            <p className="font-body text-sm font-medium text-stone-800 group-hover:text-sage-700">Buy credits</p>
+          <div className="rounded-2xl border border-[#2A2A2A] bg-[#141414] p-4 hover:border-[#fd5227]/30 transition-colors group cursor-pointer">
+            <CreditCard className="h-5 w-5 text-[#fd5227]/60 mb-2" />
+            <p className="font-body text-sm font-medium text-stone-300 group-hover:text-white">Buy credits</p>
           </div>
         </Link>
       </div>

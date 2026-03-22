@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Leaf, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -51,29 +51,33 @@ export function LoginClient() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center pt-16 px-6 relative overflow-hidden" style={{ background: "linear-gradient(135deg, #FDFBF8 0%, #FAF6EF 50%, #f4f7f3 100%)" }}>
+    <div className="min-h-screen flex items-center justify-center pt-16 px-6 relative overflow-hidden bg-[#0A0A0A]">
       {/* Decorative */}
-      <div className="absolute top-1/4 -left-32 w-96 h-96 rounded-full opacity-30 pointer-events-none" style={{ background: "radial-gradient(circle, #cddbc9 0%, transparent 70%)" }} />
-      <div className="absolute bottom-1/4 -right-32 w-80 h-80 rounded-full opacity-20 pointer-events-none" style={{ background: "radial-gradient(circle, #e6ede4 0%, transparent 70%)" }} />
+      <div className="absolute top-1/4 -left-32 w-96 h-96 rounded-full opacity-10 pointer-events-none" style={{ background: "radial-gradient(circle, #fd5227 0%, transparent 70%)" }} />
+      <div className="absolute bottom-1/4 -right-32 w-80 h-80 rounded-full opacity-8 pointer-events-none" style={{ background: "radial-gradient(circle, #fd5227 0%, transparent 70%)" }} />
 
       <div className="relative w-full max-w-sm">
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-5">
-            <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-sage-500">
-              <Leaf className="h-5 w-5 text-white" />
-            </div>
-            <span className="font-display text-2xl font-semibold text-stone-800">Zen Studio</span>
+            <img
+              src="/Logo functionallab.jpeg"
+              alt="The FunctionaLab"
+              className="h-10 w-10 object-contain"
+            />
+            <span className="font-display text-2xl font-bold text-white">
+              The <span className="text-[#fd5227]">FunctionaLab</span>
+            </span>
           </div>
-          <h1 className="font-display text-3xl font-light text-stone-800 mb-1">Welcome back</h1>
-          <p className="font-body text-sm text-stone-500">Sign in to your account</p>
+          <h1 className="font-display text-3xl font-light text-white mb-1">Welcome back</h1>
+          <p className="font-body text-sm text-stone-400">Sign in to your account</p>
         </div>
 
-        <div className="bg-white rounded-2xl border border-stone-200 p-8 shadow-lg shadow-stone-100/80">
+        <div className="bg-[#141414] rounded-2xl border border-[#2A2A2A] p-8 shadow-lg shadow-black/20">
           {/* Google */}
           <Button
             variant="outline"
-            className="w-full gap-2 mb-6"
+            className="w-full gap-2 mb-6 border-[#2A2A2A] bg-[#1A1A1A] text-stone-300 hover:bg-white/5 hover:text-white"
             onClick={handleGoogleLogin}
             disabled={googleLoading}
           >
@@ -92,17 +96,17 @@ export function LoginClient() {
 
           <div className="relative mb-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-stone-200" />
+              <div className="w-full border-t border-[#2A2A2A]" />
             </div>
             <div className="relative flex justify-center text-xs">
-              <span className="bg-white px-3 text-stone-400 font-body">or continue with email</span>
+              <span className="bg-[#141414] px-3 text-stone-500 font-body">or continue with email</span>
             </div>
           </div>
 
           {/* Email form */}
           <form onSubmit={handleEmailLogin} className="space-y-4">
             <div className="space-y-1.5">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-stone-300">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -111,12 +115,13 @@ export function LoginClient() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 autoComplete="email"
+                className="bg-[#1A1A1A] border-[#2A2A2A] text-white placeholder:text-stone-600"
               />
             </div>
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password">Password</Label>
-                <Link href="/forgot-password" className="text-xs text-sage-600 hover:text-sage-700 font-body">
+                <Label htmlFor="password" className="text-stone-300">Password</Label>
+                <Link href="/forgot-password" className="text-xs text-[#fd5227] hover:text-[#fd5227]/80 font-body">
                   Forgot password?
                 </Link>
               </div>
@@ -128,9 +133,10 @@ export function LoginClient() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 autoComplete="current-password"
+                className="bg-[#1A1A1A] border-[#2A2A2A] text-white placeholder:text-stone-600"
               />
             </div>
-            <Button className="w-full" type="submit" disabled={loading}>
+            <Button className="w-full bg-[#fd5227] hover:bg-[#e04420] text-white" type="submit" disabled={loading}>
               {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Sign in"}
             </Button>
           </form>
@@ -138,7 +144,7 @@ export function LoginClient() {
 
         <p className="mt-6 text-center text-sm text-stone-500 font-body">
           Don&apos;t have an account?{" "}
-          <Link href={`/signup?redirect=${redirect}`} className="text-sage-600 font-medium hover:text-sage-700">
+          <Link href={`/signup?redirect=${redirect}`} className="text-[#fd5227] font-medium hover:text-[#fd5227]/80">
             Create one
           </Link>
         </p>
@@ -146,4 +152,3 @@ export function LoginClient() {
     </div>
   );
 }
-

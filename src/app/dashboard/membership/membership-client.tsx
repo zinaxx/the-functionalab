@@ -81,7 +81,7 @@ export function MembershipClient() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-48">
-        <Loader2 className="h-6 w-6 animate-spin text-stone-300" />
+        <Loader2 className="h-6 w-6 animate-spin text-stone-600" />
       </div>
     );
   }
@@ -90,20 +90,20 @@ export function MembershipClient() {
 
   return (
     <div className="space-y-8">
-      <h1 className="font-display text-4xl font-light text-stone-800">Membership</h1>
+      <h1 className="font-display text-4xl font-light text-white">Membership</h1>
 
       {/* Current status */}
-      <div className="rounded-2xl bg-white border border-stone-200 p-6">
-        <h2 className="font-display text-xl font-medium text-stone-800 mb-4">Current plan</h2>
+      <div className="rounded-2xl bg-[#141414] border border-[#2A2A2A] p-6">
+        <h2 className="font-display text-xl font-medium text-white mb-4">Current plan</h2>
 
         {hasActiveMembership ? (
           <div className="space-y-4">
-            <div className="flex items-start gap-3 p-4 bg-sage-50 border border-sage-200 rounded-xl">
-              <CheckCircle2 className="h-5 w-5 text-sage-600 mt-0.5 shrink-0" />
+            <div className="flex items-start gap-3 p-4 bg-[#fd5227]/10 border border-[#fd5227]/30 rounded-xl">
+              <CheckCircle2 className="h-5 w-5 text-[#fd5227] mt-0.5 shrink-0" />
               <div>
-                <p className="font-body font-medium text-sage-800">Unlimited Monthly — Active</p>
+                <p className="font-body font-medium text-[#fd5227]">Unlimited Monthly — Active</p>
                 {data?.membership?.currentPeriodEnd && (
-                  <p className="font-body text-sm text-sage-600 mt-0.5">
+                  <p className="font-body text-sm text-[#fd5227]/70 mt-0.5">
                     {data.membership.cancelAtPeriodEnd
                       ? `Cancels on ${format(new Date(data.membership.currentPeriodEnd), "MMMM d, yyyy")}`
                       : `Renews on ${format(new Date(data.membership.currentPeriodEnd), "MMMM d, yyyy")}`}
@@ -115,14 +115,14 @@ export function MembershipClient() {
             {!data?.membership?.cancelAtPeriodEnd ? (
               <Button
                 variant="outline"
-                className="text-red-600 border-red-200 hover:bg-red-50"
+                className="text-red-500 border-red-500/30 hover:bg-red-500/10 hover:border-red-500/50"
                 onClick={handleCancelSubscription}
                 disabled={cancelLoading}
               >
                 {cancelLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Cancel subscription"}
               </Button>
             ) : (
-              <div className="flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800 font-body">
+              <div className="flex items-start gap-2 p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl text-sm text-amber-400 font-body">
                 <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
                 Your subscription is set to cancel at the end of this billing period.
               </div>
@@ -130,17 +130,17 @@ export function MembershipClient() {
           </div>
         ) : (
           <div className="space-y-3">
-            <div className="flex items-start gap-3 p-4 bg-stone-50 border border-stone-200 rounded-xl">
-              <CreditCard className="h-5 w-5 text-stone-400 mt-0.5 shrink-0" />
+            <div className="flex items-start gap-3 p-4 bg-[#1A1A1A] border border-[#2A2A2A] rounded-xl">
+              <CreditCard className="h-5 w-5 text-stone-500 mt-0.5 shrink-0" />
               <div>
-                <p className="font-body font-medium text-stone-700">Pay-as-you-go</p>
+                <p className="font-body font-medium text-stone-300">Pay-as-you-go</p>
                 <p className="font-body text-sm text-stone-500 mt-0.5">
                   {data?.creditBalance ?? 0} credit{(data?.creditBalance ?? 0) !== 1 ? "s" : ""} remaining
                 </p>
               </div>
             </div>
             <Link href="/pricing">
-              <Button>Upgrade to Unlimited Monthly</Button>
+              <Button className="bg-[#fd5227] hover:bg-[#e04420] text-white">Upgrade to Unlimited Monthly</Button>
             </Link>
           </div>
         )}
@@ -148,22 +148,21 @@ export function MembershipClient() {
 
       {/* Credits & packs */}
       {!hasActiveMembership && (
-        <div className="rounded-2xl bg-white border border-stone-200 p-6">
-          <h2 className="font-display text-xl font-medium text-stone-800 mb-2">Buy class credits</h2>
+        <div className="rounded-2xl bg-[#141414] border border-[#2A2A2A] p-6">
+          <h2 className="font-display text-xl font-medium text-white mb-2">Buy class credits</h2>
           <p className="font-body text-sm text-stone-500 mb-5">Credits are deducted when you book a class.</p>
           <div className="grid gap-3 sm:grid-cols-3">
             {PRICING_PLANS.filter((p) => p.type === "one-time").map((plan) => (
               <div
                 key={plan.id}
-                className={`rounded-2xl border p-4 ${plan.popular ? "border-sage-400 bg-sage-50" : "border-stone-200 bg-white"}`}
+                className={`rounded-2xl border p-4 ${plan.popular ? "border-[#fd5227] bg-[#fd5227]/5" : "border-[#2A2A2A] bg-[#1A1A1A]"}`}
               >
-                <p className="font-display text-lg font-medium text-stone-800">{plan.name}</p>
-                <p className="font-display text-2xl font-light text-stone-800 mt-1">€{plan.price}</p>
+                <p className="font-display text-lg font-medium text-white">{plan.name}</p>
+                <p className="font-display text-2xl font-light text-white mt-1">${plan.price}</p>
                 <p className="font-body text-sm text-stone-500 mt-0.5">{plan.credits} credits</p>
                 <Button
-                  className="w-full mt-3"
+                  className={`w-full mt-3 ${plan.popular ? "bg-[#fd5227] hover:bg-[#e04420] text-white" : "bg-[#2A2A2A] hover:bg-[#3A3A3A] text-white border-0"}`}
                   size="sm"
-                  variant={plan.popular ? "default" : "outline"}
                   onClick={() => handleCheckout(plan.id)}
                   disabled={checkoutLoading === plan.id}
                 >
@@ -177,20 +176,20 @@ export function MembershipClient() {
 
       {/* Payment history */}
       {data?.payments && data.payments.length > 0 && (
-        <div className="rounded-2xl bg-white border border-stone-200 p-6">
-          <h2 className="font-display text-xl font-medium text-stone-800 mb-4">Payment history</h2>
+        <div className="rounded-2xl bg-[#141414] border border-[#2A2A2A] p-6">
+          <h2 className="font-display text-xl font-medium text-white mb-4">Payment history</h2>
           <div className="space-y-2">
             {data.payments.map((payment) => (
-              <div key={payment.id} className="flex items-center justify-between py-2 border-b border-stone-100 last:border-0">
+              <div key={payment.id} className="flex items-center justify-between py-2 border-b border-[#2A2A2A] last:border-0">
                 <div>
-                  <p className="font-body text-sm font-medium text-stone-700">
+                  <p className="font-body text-sm font-medium text-stone-300">
                     {payment.description ?? payment.type}
                   </p>
-                  <p className="font-body text-xs text-stone-400">
+                  <p className="font-body text-xs text-stone-500">
                     {format(new Date(payment.createdAt), "MMM d, yyyy")}
                   </p>
                 </div>
-                <p className="font-body text-sm font-medium text-stone-800">
+                <p className="font-body text-sm font-medium text-white">
                   {new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(payment.amount / 100)}
                 </p>
               </div>

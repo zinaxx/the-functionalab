@@ -40,7 +40,7 @@ export function BookingsClient({ bookings }: Props) {
 
   return (
     <Tabs defaultValue="upcoming">
-      <TabsList>
+      <TabsList className="bg-[#141414] border border-[#2A2A2A]">
         <TabsTrigger value="upcoming">
           Upcoming {upcoming.length > 0 && `(${upcoming.length})`}
         </TabsTrigger>
@@ -113,33 +113,33 @@ function UpcomingBookingCard({ booking }: { booking: BookingWithClass }) {
 
   return (
     <>
-      <div className="rounded-2xl bg-white border border-stone-200 p-5">
+      <div className="rounded-2xl bg-[#141414] border border-[#2A2A2A] p-5">
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
             <div className="flex items-center gap-2 mb-1.5">
               <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium font-body ${CLASS_STYLE_COLORS[booking.yogaClass.style]}`}>
                 {CLASS_STYLE_LABELS[booking.yogaClass.style]}
               </span>
-              <Badge variant="outline" className="text-xs text-sage-700 border-sage-200 bg-sage-50">
+              <Badge variant="outline" className="text-xs text-[#fd5227] border-[#fd5227]/30 bg-[#fd5227]/10">
                 Confirmed
               </Badge>
             </div>
             <Link href={`/classes/${booking.classId}`} className="block">
-              <h3 className="font-body font-medium text-stone-800 hover:text-sage-700 transition-colors">
+              <h3 className="font-body font-medium text-white hover:text-[#fd5227] transition-colors">
                 {booking.yogaClass.title}
               </h3>
             </Link>
             <p className="font-body text-sm text-stone-500 mt-0.5">
               {booking.yogaClass.instructor.name}
             </p>
-            <p className="font-body text-sm text-stone-600 mt-1">
+            <p className="font-body text-sm text-stone-400 mt-1">
               {formatClassTime(new Date(booking.yogaClass.startsAt), new Date(booking.yogaClass.endsAt))}
             </p>
           </div>
           <Button
             variant="ghost"
             size="sm"
-            className="text-stone-400 hover:text-red-600 shrink-0"
+            className="text-stone-500 hover:text-red-500 shrink-0"
             onClick={() => setShowModal(true)}
           >
             Cancel
@@ -148,14 +148,14 @@ function UpcomingBookingCard({ booking }: { booking: BookingWithClass }) {
       </div>
 
       <Dialog open={showModal} onOpenChange={setShowModal}>
-        <DialogContent>
+        <DialogContent className="bg-[#141414] border-[#2A2A2A]">
           <DialogHeader>
-            <DialogTitle>Cancel booking?</DialogTitle>
+            <DialogTitle className="text-white">Cancel booking?</DialogTitle>
             <DialogDescription asChild>
               <div>
-                <p className="mb-3">You&apos;re about to cancel <strong>{booking.yogaClass.title}</strong>.</p>
+                <p className="mb-3 text-stone-400">You&apos;re about to cancel <strong className="text-white">{booking.yogaClass.title}</strong>.</p>
                 {isLate && (
-                  <div className="flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-sm">
+                  <div className="flex items-start gap-2 p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl text-amber-400 text-sm">
                     <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0" />
                     <span>This is within 12 hours of the class — your credit <strong>will not be refunded</strong>.</span>
                   </div>
@@ -169,7 +169,7 @@ function UpcomingBookingCard({ booking }: { booking: BookingWithClass }) {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="gap-2">
-            <Button variant="outline" onClick={() => setShowModal(false)}>Keep it</Button>
+            <Button variant="outline" onClick={() => setShowModal(false)} className="border-[#2A2A2A] text-stone-300 hover:text-white hover:bg-white/5">Keep it</Button>
             <Button variant="destructive" onClick={handleCancel} disabled={loading}>
               {loading ? "Cancelling..." : "Cancel booking"}
             </Button>
@@ -182,15 +182,15 @@ function UpcomingBookingCard({ booking }: { booking: BookingWithClass }) {
 
 function PastBookingCard({ booking }: { booking: BookingWithClass }) {
   const statusConfig: Record<string, { label: string; class: string }> = {
-    CONFIRMED: { label: "Attended", class: "text-sage-700 border-sage-200 bg-sage-50" },
-    CANCELLED: { label: "Cancelled", class: "text-stone-500 border-stone-200 bg-stone-50" },
-    LATE_CANCELLED: { label: "Late cancel", class: "text-amber-700 border-amber-200 bg-amber-50" },
-    NO_SHOW: { label: "No show", class: "text-red-700 border-red-200 bg-red-50" },
+    CONFIRMED: { label: "Attended", class: "text-[#fd5227] border-[#fd5227]/30 bg-[#fd5227]/10" },
+    CANCELLED: { label: "Cancelled", class: "text-stone-400 border-[#2A2A2A] bg-[#1A1A1A]" },
+    LATE_CANCELLED: { label: "Late cancel", class: "text-amber-400 border-amber-500/30 bg-amber-500/10" },
+    NO_SHOW: { label: "No show", class: "text-red-400 border-red-500/30 bg-red-500/10" },
   };
   const config = statusConfig[booking.status] ?? statusConfig.CONFIRMED;
 
   return (
-    <div className="rounded-2xl bg-white border border-stone-200 p-5 opacity-80">
+    <div className="rounded-2xl bg-[#141414] border border-[#2A2A2A] p-5 opacity-80">
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
           <div className="flex items-center gap-2 mb-1.5">
@@ -201,8 +201,8 @@ function PastBookingCard({ booking }: { booking: BookingWithClass }) {
               {config.label}
             </Badge>
           </div>
-          <h3 className="font-body font-medium text-stone-700">{booking.yogaClass.title}</h3>
-          <p className="font-body text-sm text-stone-400 mt-0.5">{booking.yogaClass.instructor.name}</p>
+          <h3 className="font-body font-medium text-stone-300">{booking.yogaClass.title}</h3>
+          <p className="font-body text-sm text-stone-500 mt-0.5">{booking.yogaClass.instructor.name}</p>
           <p className="font-body text-sm text-stone-500 mt-1">
             {formatClassTime(new Date(booking.yogaClass.startsAt), new Date(booking.yogaClass.endsAt))}
           </p>
@@ -222,13 +222,13 @@ function EmptyState({
   action?: { href: string; label: string };
 }) {
   return (
-    <div className="mt-4 rounded-2xl bg-white border border-stone-200 p-10 text-center">
-      <Calendar className="h-10 w-10 text-stone-200 mx-auto mb-3" />
+    <div className="mt-4 rounded-2xl bg-[#141414] border border-[#2A2A2A] p-10 text-center">
+      <Calendar className="h-10 w-10 text-stone-700 mx-auto mb-3" />
       <p className="font-display text-xl text-stone-400 mb-1">{title}</p>
-      <p className="font-body text-sm text-stone-400 mb-4">{description}</p>
+      <p className="font-body text-sm text-stone-500 mb-4">{description}</p>
       {action && (
         <Link href={action.href}>
-          <Button>{action.label}</Button>
+          <Button className="bg-[#fd5227] hover:bg-[#e04420] text-white">{action.label}</Button>
         </Link>
       )}
     </div>

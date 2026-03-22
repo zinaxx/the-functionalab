@@ -14,8 +14,8 @@ export default async function AdminClassesPage() {
       },
       orderBy: { startsAt: "desc" },
       take: 100,
-    }),
-    prisma.instructor.findMany({ where: { active: true }, orderBy: { name: "asc" } }),
+    }).catch(() => []),
+    prisma.instructor.findMany({ where: { active: true }, orderBy: { name: "asc" } }).catch(() => []),
   ]);
 
   return (

@@ -21,14 +21,14 @@ export default async function AdminLayout({
   if (user.email !== process.env.ADMIN_EMAIL) redirect("/");
 
   return (
-    <div className="min-h-screen bg-stone-100 pt-16">
-      <div className="bg-white border-b border-stone-200">
+    <div className="min-h-screen bg-[#0A0A0A] pt-16">
+      <div className="bg-[#141414] border-b border-[#2A2A2A]">
         <div className="mx-auto max-w-7xl px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-1">
-            <Settings className="h-4 w-4 text-stone-400 mr-2" />
-            <span className="font-body text-sm font-medium text-stone-600">Admin</span>
+            <Settings className="h-4 w-4 text-stone-500 mr-2" />
+            <span className="font-body text-sm font-medium text-stone-400">Admin</span>
           </div>
-          <Link href="/" className="font-body text-xs text-stone-400 hover:text-stone-600">
+          <Link href="/" className="font-body text-xs text-stone-500 hover:text-stone-300">
             ← Back to site
           </Link>
         </div>
@@ -42,7 +42,7 @@ export default async function AdminLayout({
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium font-body text-stone-600 hover:text-stone-900 hover:bg-stone-200 transition-colors whitespace-nowrap"
+                  className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium font-body text-stone-400 hover:text-white hover:bg-white/5 transition-colors whitespace-nowrap"
                 >
                   <item.icon className="h-4 w-4 shrink-0" />
                   {item.label}

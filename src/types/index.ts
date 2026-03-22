@@ -112,7 +112,7 @@ export type WaitlistResponse = ApiResponse<WaitlistEntry>;
 export type PricingPlan = {
   id: string;
   name: string;
-  price: number; // in euros
+  price: number; // in USD
   credits: number | null; // null for unlimited
   type: "one-time" | "subscription";
   stripePriceId: string;

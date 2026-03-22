@@ -9,33 +9,33 @@ function studioEmailWrapper(content: string): string {
       <meta charset="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <style>
-        body { font-family: 'DM Sans', Arial, sans-serif; background: #FDFBF8; margin: 0; padding: 0; color: #292524; }
-        .container { max-width: 560px; margin: 40px auto; background: white; border-radius: 16px; overflow: hidden; border: 1px solid #E7E5E4; }
-        .header { background: #5a8754; padding: 32px; text-align: center; }
+        body { font-family: 'DM Sans', Arial, sans-serif; background: #0A0A0A; margin: 0; padding: 0; color: #FFFFFF; }
+        .container { max-width: 560px; margin: 40px auto; background: #141414; border-radius: 16px; overflow: hidden; border: 1px solid #2A2A2A; }
+        .header { background: #fd5227; padding: 32px; text-align: center; }
         .header h1 { color: white; font-family: Georgia, serif; font-size: 24px; font-weight: 400; margin: 0; letter-spacing: 0.05em; }
         .header p { color: rgba(255,255,255,0.8); font-size: 12px; margin: 4px 0 0; letter-spacing: 0.1em; text-transform: uppercase; }
         .body { padding: 36px 40px; }
-        .body p { font-size: 15px; line-height: 1.7; color: #44403C; margin: 0 0 16px; }
-        .detail-card { background: #F5F5F4; border-radius: 12px; padding: 20px 24px; margin: 24px 0; }
-        .detail-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #E7E5E4; font-size: 14px; }
+        .body p { font-size: 15px; line-height: 1.7; color: #A3A3A3; margin: 0 0 16px; }
+        .detail-card { background: #1A1A1A; border-radius: 12px; padding: 20px 24px; margin: 24px 0; border: 1px solid #2A2A2A; }
+        .detail-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #2A2A2A; font-size: 14px; }
         .detail-row:last-child { border-bottom: none; }
-        .detail-label { color: #78716C; }
-        .detail-value { color: #1C1917; font-weight: 500; }
-        .cta-button { display: inline-block; background: #5a8754; color: white; text-decoration: none; padding: 12px 28px; border-radius: 24px; font-size: 14px; font-weight: 500; margin: 8px 0; }
-        .footer { padding: 24px 40px; border-top: 1px solid #E7E5E4; text-align: center; font-size: 12px; color: #A8A29E; }
-        .footer a { color: #5a8754; text-decoration: none; }
+        .detail-label { color: #6B7280; }
+        .detail-value { color: #FFFFFF; font-weight: 500; }
+        .cta-button { display: inline-block; background: #fd5227; color: white; text-decoration: none; padding: 12px 28px; border-radius: 24px; font-size: 14px; font-weight: 500; margin: 8px 0; }
+        .footer { padding: 24px 40px; border-top: 1px solid #2A2A2A; text-align: center; font-size: 12px; color: #6B7280; }
+        .footer a { color: #fd5227; text-decoration: none; }
       </style>
     </head>
     <body>
       <div class="container">
         <div class="header">
-          <h1>Zen Studio</h1>
-          <p>Paris · Yoga & Movement</p>
+          <h1>The FunctionaLab</h1>
+          <p>Jounieh · Train For Life</p>
         </div>
         <div class="body">${content}</div>
         <div class="footer">
-          <p>12 Rue de la Paix, 75001 Paris · <a href="mailto:hello@zenstudio.com">hello@zenstudio.com</a></p>
-          <p><a href="${process.env.NEXT_PUBLIC_APP_URL}">zenstudio.com</a></p>
+          <p>Jounieh, Lebanon · <a href="mailto:hello@functionallab.lb">hello@functionallab.lb</a></p>
+          <p><a href="${process.env.NEXT_PUBLIC_APP_URL}">functionallab.lb</a></p>
         </div>
       </div>
     </body>
@@ -60,16 +60,16 @@ export async function sendBookingConfirmedEmail(data: ClassEmailData) {
     <p>You're all set! We're looking forward to seeing you in class.</p>
     <div class="detail-card">
       <div class="detail-row"><span class="detail-label">Class</span><span class="detail-value">${data.className}</span></div>
-      <div class="detail-row"><span class="detail-label">Instructor</span><span class="detail-value">${data.instructorName}</span></div>
+      <div class="detail-row"><span class="detail-label">Coach</span><span class="detail-value">${data.instructorName}</span></div>
       <div class="detail-row"><span class="detail-label">When</span><span class="detail-value">${timeStr}</span></div>
-      <div class="detail-row"><span class="detail-label">Room</span><span class="detail-value">${data.room || "TBA"}</span></div>
+      <div class="detail-row"><span class="detail-label">Location</span><span class="detail-value">${data.room || "The FunctionaLab, Jounieh"}</span></div>
     </div>
-    <p>Please arrive 5–10 minutes early. Mats and props are provided.</p>
+    <p>Please arrive 5–10 minutes early. All equipment is provided.</p>
     <p>Need to cancel? You can do so up to 12 hours before class from your dashboard — no charge applies.</p>
     <p style="text-align:center; margin-top: 28px;">
       <a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard" class="cta-button">View my bookings</a>
     </p>
-    <p style="margin-top: 24px;">Namaste,<br /><strong>The Zen Studio team</strong></p>
+    <p style="margin-top: 24px;">Train hard,<br /><strong>The FunctionaLab team</strong></p>
   `);
 
   return resend.emails.send({
@@ -87,12 +87,12 @@ export async function sendClassReminderEmail(data: ClassEmailData) {
     <p>Just a friendly reminder — your class is <strong>tomorrow</strong>!</p>
     <div class="detail-card">
       <div class="detail-row"><span class="detail-label">Class</span><span class="detail-value">${data.className}</span></div>
-      <div class="detail-row"><span class="detail-label">Instructor</span><span class="detail-value">${data.instructorName}</span></div>
+      <div class="detail-row"><span class="detail-label">Coach</span><span class="detail-value">${data.instructorName}</span></div>
       <div class="detail-row"><span class="detail-label">Time</span><span class="detail-value">${timeStr}</span></div>
-      <div class="detail-row"><span class="detail-label">Room</span><span class="detail-value">${data.room || "TBA"}</span></div>
+      <div class="detail-row"><span class="detail-label">Location</span><span class="detail-value">${data.room || "The FunctionaLab, Jounieh"}</span></div>
     </div>
-    <p>We'll see you on the mat. Don't forget to bring water!</p>
-    <p style="margin-top: 24px;">Namaste,<br /><strong>The Zen Studio team</strong></p>
+    <p>We'll see you on the floor. Don't forget to bring water and a towel!</p>
+    <p style="margin-top: 24px;">Train hard,<br /><strong>The FunctionaLab team</strong></p>
   `);
 
   return resend.emails.send({
@@ -110,15 +110,15 @@ export async function sendWaitlistPromotedEmail(data: ClassEmailData) {
     <p>Great news — a spot just opened up in <strong>${data.className}</strong> and you're in!</p>
     <div class="detail-card">
       <div class="detail-row"><span class="detail-label">Class</span><span class="detail-value">${data.className}</span></div>
-      <div class="detail-row"><span class="detail-label">Instructor</span><span class="detail-value">${data.instructorName}</span></div>
+      <div class="detail-row"><span class="detail-label">Coach</span><span class="detail-value">${data.instructorName}</span></div>
       <div class="detail-row"><span class="detail-label">When</span><span class="detail-value">${timeStr}</span></div>
-      <div class="detail-row"><span class="detail-label">Room</span><span class="detail-value">${data.room || "TBA"}</span></div>
+      <div class="detail-row"><span class="detail-label">Location</span><span class="detail-value">${data.room || "The FunctionaLab, Jounieh"}</span></div>
     </div>
     <p>Your booking is confirmed — no action needed. See you in class!</p>
     <p style="text-align:center; margin-top: 28px;">
       <a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard" class="cta-button">View my bookings</a>
     </p>
-    <p style="margin-top: 24px;">Namaste,<br /><strong>The Zen Studio team</strong></p>
+    <p style="margin-top: 24px;">Train hard,<br /><strong>The FunctionaLab team</strong></p>
   `);
 
   return resend.emails.send({
@@ -134,8 +134,8 @@ export async function sendLateCancelEmail(data: ClassEmailData) {
     <p>Hi ${data.userName || "there"},</p>
     <p>You've cancelled your booking for <strong>${data.className}</strong> within 12 hours of the class start time.</p>
     <p>Per our late cancellation policy, your credit for this class <strong>has not been refunded</strong>.</p>
-    <p>If you believe this was an error or have an exceptional circumstance, please contact us at <a href="mailto:hello@zenstudio.com" style="color:#5a8754;">hello@zenstudio.com</a>.</p>
-    <p style="margin-top: 24px;">Namaste,<br /><strong>The Zen Studio team</strong></p>
+    <p>If you believe this was an error or have an exceptional circumstance, please contact us at <a href="mailto:hello@functionallab.lb" style="color:#fd5227;">hello@functionallab.lb</a>.</p>
+    <p style="margin-top: 24px;">Train hard,<br /><strong>The FunctionaLab team</strong></p>
   `);
 
   return resend.emails.send({
@@ -159,9 +159,9 @@ export async function sendPaymentConfirmedEmail({
   amount: number; // in cents
   creditsAdded: number;
 }) {
-  const amountFormatted = new Intl.NumberFormat("fr-FR", {
+  const amountFormatted = new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "EUR",
+    currency: "USD",
   }).format(amount / 100);
 
   const html = studioEmailWrapper(`
@@ -175,7 +175,7 @@ export async function sendPaymentConfirmedEmail({
     <p style="text-align:center; margin-top: 28px;">
       <a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard/membership" class="cta-button">View my account</a>
     </p>
-    <p style="margin-top: 24px;">Namaste,<br /><strong>The Zen Studio team</strong></p>
+    <p style="margin-top: 24px;">Train hard,<br /><strong>The FunctionaLab team</strong></p>
   `);
 
   return resend.emails.send({
@@ -208,7 +208,7 @@ export async function sendClassCancelledEmail({
     <p style="text-align:center; margin-top: 28px;">
       <a href="${process.env.NEXT_PUBLIC_APP_URL}/schedule" class="cta-button">Browse schedule</a>
     </p>
-    <p style="margin-top: 24px;">Namaste,<br /><strong>The Zen Studio team</strong></p>
+    <p style="margin-top: 24px;">Train hard,<br /><strong>The FunctionaLab team</strong></p>
   `);
 
   return resend.emails.send({

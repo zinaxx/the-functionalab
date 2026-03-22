@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Leaf, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -66,17 +66,21 @@ export function SignupClient() {
 
   if (done) {
     return (
-      <div className="min-h-screen bg-cream-50 flex items-center justify-center pt-16 px-6">
+      <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center pt-16 px-6">
         <div className="w-full max-w-sm text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-sage-100 mb-6">
-            <Leaf className="h-7 w-7 text-sage-500" />
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#fd5227]/10 mb-6">
+            <img
+              src="/Logo functionallab.jpeg"
+              alt="The FunctionaLab"
+              className="h-10 w-10 object-contain"
+            />
           </div>
-          <h1 className="font-display text-3xl font-light text-stone-800 mb-2">Check your inbox</h1>
-          <p className="font-body text-stone-500 text-sm leading-relaxed mb-6">
-            We sent a confirmation link to <strong>{email}</strong>. Click it to activate your account.
+          <h1 className="font-display text-3xl font-light text-white mb-2">Check your inbox</h1>
+          <p className="font-body text-stone-400 text-sm leading-relaxed mb-6">
+            We sent a confirmation link to <strong className="text-white">{email}</strong>. Click it to activate your account.
           </p>
           <Link href="/login">
-            <Button variant="outline" className="w-full">Back to sign in</Button>
+            <Button variant="outline" className="w-full border-[#2A2A2A] text-stone-300 hover:text-white hover:bg-white/5">Back to sign in</Button>
           </Link>
         </div>
       </div>
@@ -84,21 +88,27 @@ export function SignupClient() {
   }
 
   return (
-    <div className="min-h-screen bg-cream-50 flex items-center justify-center pt-16 px-6">
+    <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center pt-16 px-6">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-4">
-            <Leaf className="h-6 w-6 text-sage-500" />
-            <span className="font-display text-2xl font-semibold text-stone-800">Zen Studio</span>
+            <img
+              src="/Logo functionallab.jpeg"
+              alt="The FunctionaLab"
+              className="h-10 w-10 object-contain"
+            />
+            <span className="font-display text-2xl font-bold text-white">
+              The <span className="text-[#fd5227]">FunctionaLab</span>
+            </span>
           </div>
-          <h1 className="font-display text-3xl font-light text-stone-800 mb-1">Create account</h1>
-          <p className="font-body text-sm text-stone-500">Start your practice today</p>
+          <h1 className="font-display text-3xl font-light text-white mb-1">Create account</h1>
+          <p className="font-body text-sm text-stone-400">Start training today</p>
         </div>
 
-        <div className="bg-white rounded-2xl border border-stone-200 p-8 shadow-sm">
+        <div className="bg-[#141414] rounded-2xl border border-[#2A2A2A] p-8 shadow-sm">
           <Button
             variant="outline"
-            className="w-full gap-2 mb-6"
+            className="w-full gap-2 mb-6 border-[#2A2A2A] bg-[#1A1A1A] text-stone-300 hover:bg-white/5 hover:text-white"
             onClick={handleGoogleSignup}
             disabled={googleLoading}
           >
@@ -117,16 +127,16 @@ export function SignupClient() {
 
           <div className="relative mb-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-stone-200" />
+              <div className="w-full border-t border-[#2A2A2A]" />
             </div>
             <div className="relative flex justify-center text-xs">
-              <span className="bg-white px-3 text-stone-400 font-body">or continue with email</span>
+              <span className="bg-[#141414] px-3 text-stone-500 font-body">or continue with email</span>
             </div>
           </div>
 
           <form onSubmit={handleSignup} className="space-y-4">
             <div className="space-y-1.5">
-              <Label htmlFor="name">Full name</Label>
+              <Label htmlFor="name" className="text-stone-300">Full name</Label>
               <Input
                 id="name"
                 type="text"
@@ -135,10 +145,11 @@ export function SignupClient() {
                 onChange={(e) => setName(e.target.value)}
                 required
                 autoComplete="name"
+                className="bg-[#1A1A1A] border-[#2A2A2A] text-white placeholder:text-stone-600"
               />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-stone-300">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -147,10 +158,11 @@ export function SignupClient() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 autoComplete="email"
+                className="bg-[#1A1A1A] border-[#2A2A2A] text-white placeholder:text-stone-600"
               />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="text-stone-300">Password</Label>
               <Input
                 id="password"
                 type="password"
@@ -160,9 +172,10 @@ export function SignupClient() {
                 required
                 autoComplete="new-password"
                 minLength={8}
+                className="bg-[#1A1A1A] border-[#2A2A2A] text-white placeholder:text-stone-600"
               />
             </div>
-            <Button className="w-full" type="submit" disabled={loading}>
+            <Button className="w-full bg-[#fd5227] hover:bg-[#e04420] text-white" type="submit" disabled={loading}>
               {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Create account"}
             </Button>
           </form>
@@ -170,7 +183,7 @@ export function SignupClient() {
 
         <p className="mt-6 text-center text-sm text-stone-500 font-body">
           Already have an account?{" "}
-          <Link href={`/login?redirect=${redirect}`} className="text-sage-600 font-medium hover:text-sage-700">
+          <Link href={`/login?redirect=${redirect}`} className="text-[#fd5227] font-medium hover:text-[#fd5227]/80">
             Sign in
           </Link>
         </p>

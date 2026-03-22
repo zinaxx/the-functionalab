@@ -9,7 +9,7 @@ import { ClassStyle, ClassLevel } from "@prisma/client";
 
 export const metadata: Metadata = {
   title: "Class Schedule",
-  description: "Browse and book upcoming yoga classes at Zen Studio.",
+  description: "Browse and book upcoming training classes at The FunctionaLab.",
 };
 
 export const revalidate = 60;
@@ -53,7 +53,7 @@ function ScheduleSkeleton() {
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {Array.from({ length: 9 }).map((_, i) => (
-        <div key={i} className="rounded-2xl border border-stone-200 p-5 bg-white">
+        <div key={i} className="rounded-2xl border border-[#2A2A2A] p-5 bg-[#141414]">
           <Skeleton className="h-5 w-24 mb-3" />
           <Skeleton className="h-6 w-48 mb-2" />
           <Skeleton className="h-4 w-32 mb-4" />
@@ -71,16 +71,16 @@ export default async function SchedulePage() {
   const levels = Object.values(ClassLevel);
 
   return (
-    <div className="min-h-screen pt-24 pb-20" style={{ background: "linear-gradient(180deg, #FDFBF8 0%, #FAF6EF 100%)" }}>
+    <div className="min-h-screen pt-24 pb-20 bg-[#0A0A0A]">
       <div className="mx-auto max-w-6xl px-6">
         <div className="mb-12">
-          <p className="font-body text-xs uppercase tracking-widest text-sage-600 mb-3">
+          <p className="font-body text-xs uppercase tracking-widest text-[#fd5227] mb-3">
             Next 14 days
           </p>
-          <h1 className="font-display text-5xl md:text-6xl font-light text-stone-800">
+          <h1 className="font-display text-5xl md:text-6xl font-light text-white">
             Class schedule
           </h1>
-          <div className="mt-4 w-16 h-px bg-sage-300" />
+          <div className="mt-4 w-16 h-px bg-[#fd5227]/40" />
         </div>
         <Suspense fallback={<ScheduleSkeleton />}>
           <ScheduleClient

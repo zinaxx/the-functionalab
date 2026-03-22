@@ -73,10 +73,10 @@ export function AdminMembersClient({ members }: Props) {
         />
       </div>
 
-      <div className="rounded-2xl bg-white border border-stone-200 overflow-hidden">
+      <div className="rounded-2xl bg-[#141414] border border-[#2A2A2A] overflow-hidden">
         <table className="w-full text-sm font-body">
           <thead>
-            <tr className="border-b border-stone-100 bg-stone-50">
+            <tr className="border-b border-[#2A2A2A] bg-[#1A1A1A]">
               <th className="text-left px-5 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wide">Member</th>
               <th className="text-left px-5 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wide hidden md:table-cell">Credits</th>
               <th className="text-left px-5 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wide hidden md:table-cell">Membership</th>
@@ -85,35 +85,35 @@ export function AdminMembersClient({ members }: Props) {
               <th className="px-5 py-3" />
             </tr>
           </thead>
-          <tbody className="divide-y divide-stone-100">
+          <tbody className="divide-y divide-[#2A2A2A]">
             {filtered.map((member) => (
-              <tr key={member.id} className="hover:bg-stone-50 transition-colors">
+              <tr key={member.id} className="hover:bg-[#1A1A1A] transition-colors">
                 <td className="px-5 py-3">
                   <div className="flex items-center gap-3">
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={member.avatarUrl ?? undefined} />
-                      <AvatarFallback className="text-xs">
+                      <AvatarFallback className="text-xs bg-[#fd5227]/20 text-[#fd5227]">
                         {(member.name ?? member.email)[0].toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <p className="font-medium text-stone-800">{member.name ?? "—"}</p>
-                      <p className="text-xs text-stone-400">{member.email}</p>
+                      <p className="font-medium text-white">{member.name ?? "—"}</p>
+                      <p className="text-xs text-stone-500">{member.email}</p>
                     </div>
                   </div>
                 </td>
-                <td className="px-5 py-3 text-stone-700 hidden md:table-cell font-medium">
+                <td className="px-5 py-3 text-stone-300 hidden md:table-cell font-medium">
                   {member.creditBalance}
                 </td>
                 <td className="px-5 py-3 hidden md:table-cell">
                   {member.membership?.status === "ACTIVE" ? (
-                    <Badge variant="outline" className="text-sage-700 border-sage-200 bg-sage-50">Unlimited</Badge>
+                    <Badge variant="outline" className="text-[#fd5227] border-[#fd5227]/30 bg-[#fd5227]/10">Unlimited</Badge>
                   ) : (
-                    <span className="text-stone-400">—</span>
+                    <span className="text-stone-500">—</span>
                   )}
                 </td>
-                <td className="px-5 py-3 text-stone-600 hidden lg:table-cell">{member._count.bookings}</td>
-                <td className="px-5 py-3 text-stone-400 hidden lg:table-cell">
+                <td className="px-5 py-3 text-stone-300 hidden lg:table-cell">{member._count.bookings}</td>
+                <td className="px-5 py-3 text-stone-500 hidden lg:table-cell">
                   {format(new Date(member.createdAt), "MMM d, yyyy")}
                 </td>
                 <td className="px-5 py-3">
@@ -132,7 +132,7 @@ export function AdminMembersClient({ members }: Props) {
 
         {filtered.length === 0 && (
           <div className="py-12 text-center">
-            <p className="font-body text-stone-400">No members found</p>
+            <p className="font-body text-stone-500">No members found</p>
           </div>
         )}
       </div>
@@ -151,14 +151,14 @@ export function AdminMembersClient({ members }: Props) {
                   <AvatarFallback>{(selectedMember.name ?? selectedMember.email)[0].toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className="font-body font-medium text-stone-800">{selectedMember.name ?? "—"}</p>
+                  <p className="font-body font-medium text-white">{selectedMember.name ?? "—"}</p>
                   <p className="font-body text-sm text-stone-500">{selectedMember.email}</p>
                 </div>
               </div>
 
-              <div className="rounded-xl bg-stone-50 border border-stone-200 p-4">
-                <p className="font-body text-xs text-stone-400 uppercase tracking-wide mb-1">Current balance</p>
-                <p className="font-display text-2xl font-light text-stone-800">{selectedMember.creditBalance} credits</p>
+              <div className="rounded-xl bg-[#1A1A1A] border border-[#2A2A2A] p-4">
+                <p className="font-body text-xs text-stone-500 uppercase tracking-wide mb-1">Current balance</p>
+                <p className="font-display text-2xl font-light text-white">{selectedMember.creditBalance} credits</p>
               </div>
 
               <div className="space-y-2">
@@ -171,7 +171,7 @@ export function AdminMembersClient({ members }: Props) {
                   >
                     <Minus className="h-4 w-4" />
                   </Button>
-                  <div className="flex-1 text-center font-display text-2xl font-light text-stone-800">
+                  <div className="flex-1 text-center font-display text-2xl font-light text-white">
                     {creditAdjust > 0 ? `+${creditAdjust}` : creditAdjust}
                   </div>
                   <Button

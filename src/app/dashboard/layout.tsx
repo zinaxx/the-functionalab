@@ -19,7 +19,7 @@ export default async function DashboardLayout({
   if (!user) redirect("/login");
 
   return (
-    <div className="min-h-screen bg-cream-50 pt-16">
+    <div className="min-h-screen bg-[#0A0A0A] pt-16">
       <div className="mx-auto max-w-6xl px-6 py-10">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar */}
@@ -52,7 +52,7 @@ function DashboardNavLink({
   return (
     <Link
       href={href}
-      className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium font-body text-stone-600 hover:text-stone-900 hover:bg-stone-100 transition-colors whitespace-nowrap"
+      className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium font-body text-stone-400 hover:text-white hover:bg-white/5 transition-colors whitespace-nowrap"
     >
       <Icon className="h-4 w-4 shrink-0" />
       {label}

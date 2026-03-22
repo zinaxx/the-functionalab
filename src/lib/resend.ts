@@ -1,7 +1,7 @@
 import { Resend } from "resend";
 
 export const FROM_EMAIL =
-  process.env.RESEND_FROM_EMAIL || "hello@zenstudio.com";
+  process.env.RESEND_FROM_EMAIL || "hello@functionallab.lb";
 
 let _resend: Resend | null = null;
 

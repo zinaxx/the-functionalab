@@ -13,7 +13,7 @@ export default async function AdminMembersPage() {
     },
     orderBy: { createdAt: "desc" },
     take: 100,
-  });
+  }).catch(() => []);
 
   return (
     <div className="space-y-6">

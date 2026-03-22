@@ -81,12 +81,12 @@ export default async function ClassDetailPage({ params }: Props) {
   const isCancelled = cls.status === "CANCELLED";
 
   return (
-    <div className="min-h-screen bg-cream-50 pt-24 pb-20">
+    <div className="min-h-screen bg-[#0A0A0A] pt-24 pb-20">
       <div className="mx-auto max-w-4xl px-6">
         {/* Back */}
         <Link
           href="/schedule"
-          className="inline-flex items-center gap-2 text-sm text-stone-500 hover:text-stone-700 font-body mb-8 transition-colors"
+          className="inline-flex items-center gap-2 text-sm text-stone-500 hover:text-stone-300 font-body mb-8 transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to schedule
@@ -109,37 +109,37 @@ export default async function ClassDetailPage({ params }: Props) {
                   {LEVEL_LABELS[cls.level]}
                 </span>
                 {isCancelled && (
-                  <span className="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium bg-red-100 text-red-700 font-body">
+                  <span className="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium bg-red-500/20 text-red-400 font-body">
                     Cancelled
                   </span>
                 )}
               </div>
-              <h1 className="font-display text-4xl font-light text-stone-800 mb-2">
+              <h1 className="font-display text-4xl font-light text-white mb-2">
                 {cls.title}
               </h1>
-              <p className="font-body text-stone-500">
+              <p className="font-body text-stone-400">
                 with {cls.instructor.name}
               </p>
             </div>
 
             {/* Details grid */}
-            <div className="grid grid-cols-2 gap-4 rounded-2xl bg-white border border-stone-200 p-5">
+            <div className="grid grid-cols-2 gap-4 rounded-2xl bg-[#141414] border border-[#2A2A2A] p-5">
               <div className="flex items-start gap-3">
-                <Clock className="h-4 w-4 text-sage-500 mt-0.5 shrink-0" />
+                <Clock className="h-4 w-4 text-[#fd5227] mt-0.5 shrink-0" />
                 <div>
-                  <p className="text-xs text-stone-400 font-body mb-0.5">When</p>
-                  <p className="text-sm font-medium text-stone-800 font-body">
+                  <p className="text-xs text-stone-500 font-body mb-0.5">When</p>
+                  <p className="text-sm font-medium text-white font-body">
                     {formatClassTime(cls.startsAt, cls.endsAt)}
                   </p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <Users className="h-4 w-4 text-sage-500 mt-0.5 shrink-0" />
+                <Users className="h-4 w-4 text-[#fd5227] mt-0.5 shrink-0" />
                 <div>
-                  <p className="text-xs text-stone-400 font-body mb-0.5">Availability</p>
+                  <p className="text-xs text-stone-500 font-body mb-0.5">Availability</p>
                   <p
                     className={`text-sm font-medium font-body ${
-                      isFull ? "text-red-600" : spotsLeft <= 3 ? "text-amber-600" : "text-stone-800"
+                      isFull ? "text-red-500" : spotsLeft <= 3 ? "text-amber-500" : "text-white"
                     }`}
                   >
                     {isFull ? "Class full" : `${spotsLeft} of ${cls.capacity} spots left`}
@@ -147,20 +147,20 @@ export default async function ClassDetailPage({ params }: Props) {
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <Clock className="h-4 w-4 text-sage-500 mt-0.5 shrink-0" />
+                <Clock className="h-4 w-4 text-[#fd5227] mt-0.5 shrink-0" />
                 <div>
-                  <p className="text-xs text-stone-400 font-body mb-0.5">Duration</p>
-                  <p className="text-sm font-medium text-stone-800 font-body">
+                  <p className="text-xs text-stone-500 font-body mb-0.5">Duration</p>
+                  <p className="text-sm font-medium text-white font-body">
                     {cls.durationMins} minutes
                   </p>
                 </div>
               </div>
               {cls.room && (
                 <div className="flex items-start gap-3">
-                  <MapPin className="h-4 w-4 text-sage-500 mt-0.5 shrink-0" />
+                  <MapPin className="h-4 w-4 text-[#fd5227] mt-0.5 shrink-0" />
                   <div>
-                    <p className="text-xs text-stone-400 font-body mb-0.5">Room</p>
-                    <p className="text-sm font-medium text-stone-800 font-body">{cls.room}</p>
+                    <p className="text-xs text-stone-500 font-body mb-0.5">Room</p>
+                    <p className="text-sm font-medium text-white font-body">{cls.room}</p>
                   </div>
                 </div>
               )}
@@ -168,31 +168,31 @@ export default async function ClassDetailPage({ params }: Props) {
 
             {/* Description */}
             {cls.description && (
-              <div className="rounded-2xl bg-white border border-stone-200 p-6">
-                <h2 className="font-display text-xl font-medium text-stone-800 mb-3">
+              <div className="rounded-2xl bg-[#141414] border border-[#2A2A2A] p-6">
+                <h2 className="font-display text-xl font-medium text-white mb-3">
                   About this class
                 </h2>
-                <p className="font-body text-stone-600 leading-relaxed text-sm">
+                <p className="font-body text-stone-400 leading-relaxed text-sm">
                   {cls.description}
                 </p>
               </div>
             )}
 
-            {/* Instructor card */}
-            <div className="rounded-2xl bg-white border border-stone-200 p-6">
-              <h2 className="font-display text-xl font-medium text-stone-800 mb-4">
-                Your instructor
+            {/* Coach card */}
+            <div className="rounded-2xl bg-[#141414] border border-[#2A2A2A] p-6">
+              <h2 className="font-display text-xl font-medium text-white mb-4">
+                Your coach
               </h2>
               <div className="flex items-start gap-4">
                 <Avatar className="h-16 w-16">
                   <AvatarImage src={cls.instructor.avatarUrl ?? undefined} />
-                  <AvatarFallback className="text-lg">
+                  <AvatarFallback className="text-lg bg-[#fd5227]/20 text-[#fd5227]">
                     {cls.instructor.name[0]}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-display text-lg font-medium text-stone-800">
+                    <h3 className="font-display text-lg font-medium text-white">
                       {cls.instructor.name}
                     </h3>
                     {cls.instructor.instagram && (
@@ -200,7 +200,7 @@ export default async function ClassDetailPage({ params }: Props) {
                         href={`https://instagram.com/${cls.instructor.instagram.replace("@", "")}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-stone-400 hover:text-sage-500 transition-colors"
+                        className="text-stone-500 hover:text-[#fd5227] transition-colors"
                       >
                         <Instagram className="h-4 w-4" />
                       </a>
@@ -217,7 +217,7 @@ export default async function ClassDetailPage({ params }: Props) {
                     ))}
                   </div>
                   {cls.instructor.bio && (
-                    <p className="font-body text-sm text-stone-500 leading-relaxed">
+                    <p className="font-body text-sm text-stone-400 leading-relaxed">
                       {cls.instructor.bio}
                     </p>
                   )}
@@ -228,12 +228,12 @@ export default async function ClassDetailPage({ params }: Props) {
 
           {/* Booking sidebar */}
           <div className="lg:col-span-1">
-            <div className="sticky top-24 rounded-2xl bg-white border border-stone-200 p-6">
+            <div className="sticky top-24 rounded-2xl bg-[#141414] border border-[#2A2A2A] p-6">
               <div className="mb-4">
-                <p className="font-display text-3xl font-light text-stone-800">
+                <p className="font-display text-3xl font-light text-white">
                   {cls.creditCost === 1 ? "1 credit" : `${cls.creditCost} credits`}
                 </p>
-                <p className="font-body text-sm text-stone-400 mt-1">per person</p>
+                <p className="font-body text-sm text-stone-500 mt-1">per person</p>
               </div>
 
               <BookButton
@@ -250,7 +250,7 @@ export default async function ClassDetailPage({ params }: Props) {
                 startsAt={cls.startsAt}
               />
 
-              <p className="mt-4 text-center text-xs text-stone-400 font-body">
+              <p className="mt-4 text-center text-xs text-stone-500 font-body">
                 Free cancellation up to 12h before class
               </p>
             </div>

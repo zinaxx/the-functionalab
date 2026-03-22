@@ -77,13 +77,13 @@ export function ScheduleClient({ classes, instructors, styles, levels }: Props) 
         </div>
 
         <Select value={styleFilter} onValueChange={setStyleFilter}>
-          <SelectTrigger className="w-40 h-9 text-sm">
+          <SelectTrigger className="w-40 h-9 text-sm bg-[#141414] border-[#2A2A2A] text-stone-200 hover:border-[#fd5227]/40 focus:ring-0 focus:ring-offset-0">
             <SelectValue placeholder="Style" />
           </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All styles</SelectItem>
+          <SelectContent className="bg-[#141414] border-[#2A2A2A] text-stone-200">
+            <SelectItem value="all" className="focus:bg-[#2A2A2A] focus:text-white">All styles</SelectItem>
             {styles.map((s) => (
-              <SelectItem key={s} value={s}>
+              <SelectItem key={s} value={s} className="focus:bg-[#2A2A2A] focus:text-white">
                 {CLASS_STYLE_LABELS[s]}
               </SelectItem>
             ))}
@@ -91,13 +91,13 @@ export function ScheduleClient({ classes, instructors, styles, levels }: Props) 
         </Select>
 
         <Select value={levelFilter} onValueChange={setLevelFilter}>
-          <SelectTrigger className="w-40 h-9 text-sm">
+          <SelectTrigger className="w-40 h-9 text-sm bg-[#141414] border-[#2A2A2A] text-stone-200 hover:border-[#fd5227]/40 focus:ring-0 focus:ring-offset-0">
             <SelectValue placeholder="Level" />
           </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All levels</SelectItem>
+          <SelectContent className="bg-[#141414] border-[#2A2A2A] text-stone-200">
+            <SelectItem value="all" className="focus:bg-[#2A2A2A] focus:text-white">All levels</SelectItem>
             {levels.map((l) => (
-              <SelectItem key={l} value={l}>
+              <SelectItem key={l} value={l} className="focus:bg-[#2A2A2A] focus:text-white">
                 {LEVEL_LABELS[l]}
               </SelectItem>
             ))}
@@ -105,13 +105,13 @@ export function ScheduleClient({ classes, instructors, styles, levels }: Props) 
         </Select>
 
         <Select value={instructorFilter} onValueChange={setInstructorFilter}>
-          <SelectTrigger className="w-44 h-9 text-sm">
+          <SelectTrigger className="w-44 h-9 text-sm bg-[#141414] border-[#2A2A2A] text-stone-200 hover:border-[#fd5227]/40 focus:ring-0 focus:ring-offset-0">
             <SelectValue placeholder="Instructor" />
           </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All instructors</SelectItem>
+          <SelectContent className="bg-[#141414] border-[#2A2A2A] text-stone-200">
+            <SelectItem value="all" className="focus:bg-[#2A2A2A] focus:text-white">All instructors</SelectItem>
             {instructors.map((i) => (
-              <SelectItem key={i.id} value={i.id}>
+              <SelectItem key={i.id} value={i.id} className="focus:bg-[#2A2A2A] focus:text-white">
                 {i.name}
               </SelectItem>
             ))}
@@ -137,11 +137,11 @@ export function ScheduleClient({ classes, instructors, styles, levels }: Props) 
 
       {/* Empty state */}
       {filtered.length === 0 && (
-        <div className="py-24 text-center rounded-2xl border border-stone-200 bg-white">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-cream-100 mb-5">
-            <Filter className="h-6 w-6 text-stone-400" />
+        <div className="py-24 text-center rounded-2xl border border-[#2A2A2A] bg-[#141414]">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#1A1A1A] mb-5">
+            <Filter className="h-6 w-6 text-stone-500" />
           </div>
-          <p className="font-display text-2xl font-light text-stone-700 mb-2">No classes found</p>
+          <p className="font-display text-2xl font-light text-stone-400 mb-2">No classes found</p>
           <p className="font-body text-stone-400 text-sm mb-6 max-w-xs mx-auto">
             {hasFilters ? "Try adjusting your filters to see more classes." : "No classes scheduled for the next 14 days. Check back soon!"}
           </p>
@@ -164,14 +164,14 @@ export function ScheduleClient({ classes, instructors, styles, levels }: Props) 
             <div key={dateKey}>
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex flex-col">
-                  <span className="font-display text-2xl font-medium text-stone-800">
+                  <span className="font-display text-2xl font-medium text-white">
                     {isToday ? "Today" : format(date, "EEEE")}
                   </span>
-                  <span className="font-body text-sm text-stone-400">
+                  <span className="font-body text-sm text-stone-500">
                     {format(date, "MMMM d, yyyy")}
                   </span>
                 </div>
-                <div className="flex-1 h-px bg-stone-200 mt-1" />
+                <div className="flex-1 h-px bg-[#2A2A2A] mt-1" />
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -193,7 +193,7 @@ function ClassCard({ cls }: { cls: YogaClassWithDetails }) {
 
   return (
     <Link href={`/classes/${cls.id}`} className="group block">
-      <div className="h-full rounded-2xl border border-stone-200 bg-white p-5 hover:border-sage-300 hover:shadow-sm transition-all duration-200">
+      <div className="h-full rounded-2xl border border-[#2A2A2A] bg-[#141414] p-5 hover:border-[#fd5227]/40 hover:bg-[#1A1A1A] hover:shadow-sm transition-all duration-200">
         <div className="flex items-start justify-between mb-3">
           <span
             className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium font-body ${CLASS_STYLE_COLORS[cls.style]}`}
@@ -207,13 +207,13 @@ function ClassCard({ cls }: { cls: YogaClassWithDetails }) {
           </span>
         </div>
 
-        <h3 className="font-display text-lg font-medium text-stone-800 mb-1 group-hover:text-sage-700 transition-colors">
+        <h3 className="font-display text-lg font-medium text-white mb-1 group-hover:text-[#fd5227] transition-colors">
           {cls.title}
         </h3>
         <p className="font-body text-sm text-stone-500 mb-4">{cls.instructor.name}</p>
 
         <div className="flex items-center justify-between text-sm font-body">
-          <div className="flex items-center gap-3 text-stone-600">
+          <div className="flex items-center gap-3 text-stone-300">
             <span className="font-medium">
               {formatTime(cls.startsAt)} – {formatTime(cls.endsAt)}
             </span>
@@ -237,7 +237,7 @@ function ClassCard({ cls }: { cls: YogaClassWithDetails }) {
         </div>
 
         {cls.room && (
-          <p className="mt-2 text-xs text-stone-400 font-body">{cls.room}</p>
+          <p className="mt-2 text-xs text-stone-500 font-body">{cls.room}</p>
         )}
       </div>
     </Link>
