@@ -22,13 +22,13 @@ export function Footer() {
               Jounieh&apos;s premier functional fitness gym. Train for life.
             </p>
             <a
-              href="https://instagram.com/functionallab.lb"
+              href="https://instagram.com/thefunctionalablb"
               target="_blank"
               rel="noopener noreferrer"
               className="mt-4 inline-flex items-center gap-2 text-sm text-stone-400 hover:text-[#fd5227] transition-colors"
             >
               <Instagram className="h-4 w-4" />
-              @functionallab.lb
+              @thefunctionalablb
             </a>
           </div>
 
@@ -100,11 +100,11 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href="mailto:hello@functionallab.lb"
+                  href="mailto:hello@thefunctionalablb"
                   className="flex items-center gap-2 text-stone-400 hover:text-white transition-colors"
                 >
                   <Mail className="h-4 w-4 text-[#fd5227]" />
-                  hello@functionallab.lb
+                  hello@thefunctionalablb
                 </a>
               </li>
             </ul>
