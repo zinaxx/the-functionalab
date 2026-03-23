@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
-import { Plus, Pencil, X, Copy, AlertTriangle, Loader2 } from "lucide-react";
+import { Plus, Pencil, X, Copy, Loader2, UserPlus, Search, Users, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -40,9 +40,16 @@ interface ClassWithDetails {
   _count: { bookings: number };
 }
 
+interface Member {
+  id: string;
+  name: string | null;
+  email: string;
+}
+
 interface Props {
   classes: ClassWithDetails[];
   instructors: Instructor[];
+  members: Member[];
 }
 
 interface ClassFormData {
@@ -71,14 +78,136 @@ const defaultForm: ClassFormData = {
   creditCost: 1,
 };
 
-export function AdminClassesClient({ classes, instructors }: Props) {
+export function AdminClassesClient({ classes, instructors, members }: Props) {
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<ClassFormData>(defaultForm);
   const [saving, setSaving] = useState(false);
   const [cancellingId, setCancellingId] = useState<string | null>(null);
+
+  // Register walk-in state
+  const [registerClass, setRegisterClass] = useState<ClassWithDetails | null>(null);
+  const [memberSearch, setMemberSearch] = useState("");
+  const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
+  const [registering, setRegistering] = useState(false);
+
+  // Roster state
+  type BookingEntry = { id: string; user: { id: string; name: string | null; email: string }; createdAt: string };
+  type WaitlistEntry = { id: string; position: number; user: { id: string; name: string | null; email: string } };
+  const [rosterClass, setRosterClass] = useState<ClassWithDetails | null>(null);
+  const [rosterTab, setRosterTab] = useState<"roster" | "waitlist">("roster");
+  const [roster, setRoster] = useState<BookingEntry[]>([]);
+  const [waitlist, setWaitlist] = useState<WaitlistEntry[]>([]);
+  const [rosterLoading, setRosterLoading] = useState(false);
+  const [removingId, setRemovingId] = useState<string | null>(null);
+
   const router = useRouter();
   const { toast } = useToast();
+
+  const openRoster = async (cls: ClassWithDetails) => {
+    setRosterClass(cls);
+    setRosterTab("roster");
+    setRosterLoading(true);
+    try {
+      const [bookingsRes, waitlistRes] = await Promise.all([
+        fetch(`/api/admin/classes/${cls.id}/bookings`),
+        fetch(`/api/admin/classes/${cls.id}/waitlist`),
+      ]);
+      const [bookingsData, waitlistData] = await Promise.all([bookingsRes.json(), waitlistRes.json()]);
+      setRoster(bookingsData.data ?? []);
+      setWaitlist(waitlistData.data ?? []);
+    } finally {
+      setRosterLoading(false);
+    }
+  };
+
+  const refreshRoster = async (classId: string) => {
+    const [bookingsRes, waitlistRes] = await Promise.all([
+      fetch(`/api/admin/classes/${classId}/bookings`),
+      fetch(`/api/admin/classes/${classId}/waitlist`),
+    ]);
+    const [bookingsData, waitlistData] = await Promise.all([bookingsRes.json(), waitlistRes.json()]);
+    setRoster(bookingsData.data ?? []);
+    setWaitlist(waitlistData.data ?? []);
+  };
+
+  const handleRemoveBooking = async (bookingId: string) => {
+    if (!rosterClass) return;
+    setRemovingId(bookingId);
+    try {
+      const res = await fetch(`/api/admin/bookings/${bookingId}`, { method: "DELETE" });
+      const d = await res.json();
+      if (res.ok) {
+        const desc = d.promoted
+          ? "Member removed and #1 on the waitlist has been confirmed."
+          : "Member has been removed from the class.";
+        toast({ title: "Booking removed", description: desc });
+        await refreshRoster(rosterClass.id);
+        router.refresh();
+      } else {
+        toast({ variant: "destructive", title: "Error", description: d.error });
+      }
+    } finally {
+      setRemovingId(null);
+    }
+  };
+
+  const handleRemoveWaitlist = async (entryId: string) => {
+    if (!rosterClass) return;
+    setRemovingId(entryId);
+    try {
+      const res = await fetch(`/api/admin/classes/${rosterClass.id}/waitlist?entryId=${entryId}`, { method: "DELETE" });
+      if (res.ok) {
+        toast({ title: "Removed from waitlist" });
+        await refreshRoster(rosterClass.id);
+      } else {
+        const d = await res.json();
+        toast({ variant: "destructive", title: "Error", description: d.error });
+      }
+    } finally {
+      setRemovingId(null);
+    }
+  };
+
+  const filteredMembers = members.filter((m) => {
+    const q = memberSearch.toLowerCase();
+    return (
+      m.name?.toLowerCase().includes(q) ||
+      m.email.toLowerCase().includes(q)
+    );
+  });
+
+  const handleRegister = async () => {
+    if (!registerClass || !selectedMemberId) return;
+    setRegistering(true);
+    try {
+      const res = await fetch(`/api/admin/classes/${registerClass.id}/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: selectedMemberId }),
+      });
+      const d = await res.json();
+      if (res.ok) {
+        if (d.action === "waitlisted") {
+          toast({ title: "Added to waitlist", description: `Member is #${d.position} on the waitlist.` });
+        } else {
+          toast({ title: "Member registered", description: "Walk-in booking confirmed." });
+        }
+        setRegisterClass(null);
+        setSelectedMemberId(null);
+        setMemberSearch("");
+        router.refresh();
+      } else {
+        toast({ variant: "destructive", title: "Error", description: d.error });
+      }
+    } finally {
+      setRegistering(false);
+    }
+  };
+
+  const registerClassIsFull = registerClass
+    ? registerClass._count.bookings >= registerClass.capacity
+    : false;
 
   const openCreate = () => {
     setEditingId(null);
@@ -195,10 +324,7 @@ export function AdminClassesClient({ classes, instructors }: Props) {
               <tr key={cls.id} className="hover:bg-[#1A1A1A] transition-colors">
                 <td className="px-5 py-3">
                   <div>
-                    <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium mr-2 ${CLASS_STYLE_COLORS[cls.style]}`}>
-                      {CLASS_STYLE_LABELS[cls.style]}
-                    </span>
-                    <span className="font-medium text-white">{cls.title}</span>
+                    <p className="font-medium text-white">{cls.title}</p>
                     <p className="text-xs text-stone-500 mt-0.5">{cls.instructor.name}</p>
                   </div>
                 </td>
@@ -226,6 +352,15 @@ export function AdminClassesClient({ classes, instructors }: Props) {
                 </td>
                 <td className="px-5 py-3">
                   <div className="flex items-center gap-1 justify-end">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="text-stone-400 hover:text-white"
+                      title="View roster"
+                      onClick={() => openRoster(cls)}
+                    >
+                      <Users className="h-3.5 w-3.5" />
+                    </Button>
                     <Button variant="ghost" size="icon" className="text-stone-400 hover:text-white" onClick={() => openEdit(cls)}>
                       <Pencil className="h-3.5 w-3.5" />
                     </Button>
@@ -311,6 +446,7 @@ export function AdminClassesClient({ classes, instructors }: Props) {
                 type="datetime-local"
                 value={form.startsAt}
                 onChange={(e) => setForm({ ...form, startsAt: e.target.value })}
+                className="[color-scheme:dark]"
               />
             </div>
 
@@ -319,16 +455,18 @@ export function AdminClassesClient({ classes, instructors }: Props) {
                 <Label>Duration (mins)</Label>
                 <Input
                   type="number"
+                  min={1}
                   value={form.durationMins}
-                  onChange={(e) => setForm({ ...form, durationMins: Number(e.target.value) })}
+                  onChange={(e) => setForm({ ...form, durationMins: Math.max(1, Number(e.target.value)) })}
                 />
               </div>
               <div className="space-y-1.5">
                 <Label>Capacity</Label>
                 <Input
                   type="number"
+                  min={1}
                   value={form.capacity}
-                  onChange={(e) => setForm({ ...form, capacity: Number(e.target.value) })}
+                  onChange={(e) => setForm({ ...form, capacity: Math.max(1, Number(e.target.value)) })}
                 />
               </div>
               <div className="space-y-1.5">
@@ -356,6 +494,171 @@ export function AdminClassesClient({ classes, instructors }: Props) {
             <Button variant="outline" onClick={() => setShowModal(false)}>Cancel</Button>
             <Button onClick={handleSave} disabled={saving}>
               {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : editingId ? "Save changes" : "Create class"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Roster modal */}
+      <Dialog open={!!rosterClass} onOpenChange={(open) => { if (!open) setRosterClass(null); }}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Class roster</DialogTitle>
+            {rosterClass && (
+              <p className="text-sm text-stone-500 pt-1">
+                {rosterClass.title} · {format(new Date(rosterClass.startsAt), "EEE d MMM · HH:mm")}
+              </p>
+            )}
+          </DialogHeader>
+
+          {/* Tabs */}
+          <div className="flex gap-1 bg-[#1A1A1A] rounded-xl p-1">
+            <button
+              onClick={() => setRosterTab("roster")}
+              className={`flex-1 py-1.5 text-sm font-body rounded-lg transition-colors ${rosterTab === "roster" ? "bg-[#fd5227] text-white" : "text-stone-400 hover:text-white"}`}
+            >
+              Registered ({roster.length}{rosterClass ? `/${rosterClass.capacity}` : ""})
+            </button>
+            <button
+              onClick={() => setRosterTab("waitlist")}
+              className={`flex-1 py-1.5 text-sm font-body rounded-lg transition-colors ${rosterTab === "waitlist" ? "bg-[#fd5227] text-white" : "text-stone-400 hover:text-white"}`}
+            >
+              Waitlist ({waitlist.length})
+            </button>
+          </div>
+
+          <div>
+            {rosterLoading ? (
+              <div className="flex justify-center py-10">
+                <Loader2 className="h-5 w-5 animate-spin text-stone-500" />
+              </div>
+            ) : rosterTab === "roster" ? (
+              roster.length === 0 ? (
+                <p className="text-center text-sm text-stone-500 py-10">No one registered yet</p>
+              ) : (
+                <div className="divide-y divide-[#2A2A2A] rounded-xl border border-[#2A2A2A] overflow-hidden">
+                  {roster.map((booking) => (
+                    <div key={booking.id} className="flex items-center justify-between px-4 py-3 bg-[#0F0F0F]">
+                      <div>
+                        <p className="text-sm font-medium text-white">{booking.user.name ?? "—"}</p>
+                        <p className="text-xs text-stone-500">{booking.user.email}</p>
+                      </div>
+                      <Button
+                        variant="ghost" size="icon"
+                        className="text-red-500 hover:text-red-400 hover:bg-red-500/10 shrink-0"
+                        onClick={() => handleRemoveBooking(booking.id)}
+                        disabled={removingId === booking.id}
+                      >
+                        {removingId === booking.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )
+            ) : (
+              waitlist.length === 0 ? (
+                <p className="text-center text-sm text-stone-500 py-10">Waitlist is empty</p>
+              ) : (
+                <div className="divide-y divide-[#2A2A2A] rounded-xl border border-[#2A2A2A] overflow-hidden">
+                  {waitlist.map((entry) => (
+                    <div key={entry.id} className="flex items-center justify-between px-4 py-3 bg-[#0F0F0F]">
+                      <div className="flex items-center gap-3">
+                        <span className="text-xs font-bold text-[#fd5227] w-5">#{entry.position}</span>
+                        <div>
+                          <p className="text-sm font-medium text-white">{entry.user.name ?? "—"}</p>
+                          <p className="text-xs text-stone-500">{entry.user.email}</p>
+                        </div>
+                      </div>
+                      <Button
+                        variant="ghost" size="icon"
+                        className="text-red-500 hover:text-red-400 hover:bg-red-500/10 shrink-0"
+                        onClick={() => handleRemoveWaitlist(entry.id)}
+                        disabled={removingId === entry.id}
+                      >
+                        {removingId === entry.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setRosterClass(null)}>Close</Button>
+            {rosterClass?.status === "SCHEDULED" && (
+              <Button
+                className="bg-[#fd5227] hover:bg-[#e04420] text-white gap-2"
+                onClick={() => { setRosterClass(null); setRegisterClass(rosterClass); setSelectedMemberId(null); setMemberSearch(""); }}
+              >
+                <UserPlus className="h-4 w-4" />
+                Add walk-in
+              </Button>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Walk-in register modal */}
+      <Dialog open={!!registerClass} onOpenChange={(open) => { if (!open) setRegisterClass(null); }}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Register walk-in</DialogTitle>
+            {registerClass && (
+              <p className="text-sm text-stone-500 pt-1">
+                {registerClass.title} · {format(new Date(registerClass.startsAt), "EEE d MMM · HH:mm")}
+              </p>
+            )}
+          </DialogHeader>
+
+          <div className="space-y-3 py-2">
+            {registerClassIsFull && (
+              <p className="text-xs text-amber-400 bg-amber-400/10 border border-amber-400/20 rounded-xl px-3 py-2">
+                This class is full — the member will be added to the waitlist.
+              </p>
+            )}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-500 pointer-events-none" />
+              <Input
+                placeholder="Search by name or email…"
+                value={memberSearch}
+                onChange={(e) => { setMemberSearch(e.target.value); setSelectedMemberId(null); }}
+                className="pl-9"
+              />
+            </div>
+
+            <div className="h-64 overflow-y-auto rounded-xl border border-[#2A2A2A]">
+              {filteredMembers.length === 0 ? (
+                <p className="text-center text-sm text-stone-500 py-8">No members found</p>
+              ) : (
+                <div className="divide-y divide-[#2A2A2A]">
+                  {filteredMembers.map((m) => (
+                    <button
+                      key={m.id}
+                      onClick={() => setSelectedMemberId(m.id)}
+                      className={`w-full text-left px-4 py-3 transition-colors hover:bg-[#1A1A1A] ${
+                        selectedMemberId === m.id ? "bg-[#fd5227]/10 border-l-2 border-[#fd5227]" : ""
+                      }`}
+                    >
+                      <p className="text-sm font-medium text-white">{m.name ?? "—"}</p>
+                      <p className="text-xs text-stone-500">{m.email}</p>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setRegisterClass(null)}>Cancel</Button>
+            <Button
+              onClick={handleRegister}
+              disabled={!selectedMemberId || registering}
+              className="bg-[#fd5227] hover:bg-[#e04420] text-white"
+            >
+              {registering
+                ? <Loader2 className="h-4 w-4 animate-spin" />
+                : registerClassIsFull ? "Add to waitlist" : "Confirm walk-in"}
             </Button>
           </DialogFooter>
         </DialogContent>

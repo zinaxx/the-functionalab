@@ -22,21 +22,18 @@ export async function DELETE(
 
     if (!entry) return NextResponse.json({ error: "Not on waitlist" }, { status: 404 });
 
-    await prisma.$transaction(async (tx) => {
-      await tx.waitlistEntry.delete({ where: { id: entry.id } });
+    await prisma.waitlistEntry.delete({ where: { id: entry.id } });
 
-      // Recalculate positions
-      const remaining = await tx.waitlistEntry.findMany({
-        where: { classId },
-        orderBy: { position: "asc" },
-      });
-      for (let i = 0; i < remaining.length; i++) {
-        await tx.waitlistEntry.update({
-          where: { id: remaining[i].id },
-          data: { position: i + 1 },
-        });
-      }
+    const remaining = await prisma.waitlistEntry.findMany({
+      where: { classId },
+      orderBy: { position: "asc" },
     });
+    for (let i = 0; i < remaining.length; i++) {
+      await prisma.waitlistEntry.update({
+        where: { id: remaining[i].id },
+        data: { position: i + 1 },
+      });
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

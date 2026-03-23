@@ -149,14 +149,14 @@ const classTemplates: ClassTemplate[] = [
     creditCost: 1,
     instructorIndex: 3,
   },
-  // ABS_EXPRESS — Rayan (0)
+  // ABS_EXPRESS — Rayan (0)  [30-min express class]
   {
     title: "ABS Express",
     description:
       "A focused core session targeting abs, obliques, and lower back. Short, sharp, and effective — the perfect add-on to any training week.",
     style: ClassStyle.ABS_EXPRESS,
     level: ClassLevel.ALL_LEVELS,
-    durationMins: 60,
+    durationMins: 30,
     capacity: 15,
     room: "Studio 1",
     creditCost: 1,
@@ -266,67 +266,76 @@ const classTemplates: ClassTemplate[] = [
     creditCost: 1,
     instructorIndex: 2,
   },
+  // KIDS — Rayan (0)  [index 16]
+  {
+    title: "Kids",
+    description:
+      "A fun and structured fitness class designed for kids. Movement games, basic coordination drills, and positive coaching to build healthy habits from day one.",
+    style: ClassStyle.KIDS,
+    level: ClassLevel.ALL_LEVELS,
+    durationMins: 60,
+    capacity: 10,
+    room: "Kids Room",
+    creditCost: 1,
+    instructorIndex: 0,
+  },
 ];
 
 // ─── Schedule helpers ───────────────────────────────────────
 
 /**
- * Weekly time slots: [templateIndex, dayOffset (0=Mon), hour, minute]
- * dayOffset: 0=Mon, 1=Tue, 2=Wed, 3=Thu, 4=Fri, 5=Sat, 6=Sun
+ * Weekly time slots matching the JPEG schedule exactly.
+ * [templateIndex, dayOffset (0=Mon…5=Sat), hour, minute]
+ *
+ * Template index reference:
+ *  0 = HIIT (Rayan)          7 = ABS Express (Rayan, 30 min)
+ *  1 = FIIT (Ziad)           8 = Kangoo Jump (Erika)
+ *  2 = Spinning (Carla)      9 = Power Jump (Carla)
+ *  3 = Spinning (Ziad)      10 = Boxing (Ziad)
+ *  4 = Glutes (Rayan)       11 = Kids (Ziad)
+ *  5 = Glutes (Yasmina)     12 = Core & Stretching (Rayan)
+ *  6 = Sculpt (Yasmina)     13 = Core & Stretching (Carla)
+ *                           14 = Full Body Blast (Carla)
+ *                           15 = Step (Carla)
+ *                           16 = Kids (Rayan)
  */
 const weeklySchedule: [number, number, number, number][] = [
-  // Monday
-  [0, 0, 6, 30],   // HIIT (Rayan) — Mon 6:30
-  [2, 0, 9, 0],    // Spinning (Carla) — Mon 9:00
-  [4, 0, 11, 0],   // Glutes (Rayan) — Mon 11:00
-  [10, 0, 18, 0],  // Boxing (Ziad) — Mon 18:00
-  [14, 0, 19, 0],  // Full Body Blast (Carla) — Mon 19:00
-  [12, 0, 20, 0],  // Core & Stretching (Rayan) — Mon 20:00
+  // ── Monday ──────────────────────────────────────────
+  [0,  0,  9,  0],  // HIIT — Rayan       09:00–10:00
+  [8,  0, 10,  0],  // Kangoo Jump — Erika 10:00–11:00
+  [4,  0, 18, 30],  // Glutes — Rayan     18:30–19:30
+  [7,  0, 19, 30],  // ABS Express — Rayan 19:30–20:00 (30 min)
+  [9,  0, 20,  0],  // Power Jump — Carla  20:00–21:00
 
-  // Tuesday
-  [1, 1, 7, 0],    // FIIT (Ziad) — Tue 7:00
-  [6, 1, 10, 0],   // Sculpt (Yasmina) — Tue 10:00
-  [7, 1, 12, 0],   // ABS Express (Rayan) — Tue 12:00
-  [8, 1, 18, 0],   // Kangoo Jump (Erika) — Tue 18:00
-  [0, 1, 19, 0],   // HIIT (Rayan) — Tue 19:00
-  [15, 1, 20, 0],  // Step (Carla) — Tue 20:00
+  // ── Tuesday ─────────────────────────────────────────
+  [3,  1,  9,  0],  // Spinning — Ziad    09:00–10:00
+  [5,  1, 10,  0],  // Glutes — Yasmina   10:00–11:00
+  [6,  1, 11,  0],  // Sculpt — Yasmina   11:00–12:00
+  [16, 1, 18,  0],  // Kids — Rayan       18:00–19:00
+  [10, 1, 19,  0],  // Boxing — Ziad      19:00–20:00
 
-  // Wednesday
-  [3, 2, 6, 30],   // Spinning (Ziad) — Wed 6:30
-  [5, 2, 9, 0],    // Glutes (Yasmina) — Wed 9:00
-  [9, 2, 11, 0],   // Power Jump (Carla) — Wed 11:00
-  [1, 2, 18, 0],   // FIIT (Ziad) — Wed 18:00
-  [14, 2, 19, 0],  // Full Body Blast (Carla) — Wed 19:00
-  [11, 2, 17, 0],  // Kids (Ziad) — Wed 17:00
+  // ── Wednesday ───────────────────────────────────────
+  [1,  2,  9,  0],  // FIIT — Ziad              09:00–10:00
+  [12, 2, 10,  0],  // Core & Stretching — Rayan 10:00–11:00
+  [6,  2, 11,  0],  // Sculpt — Yasmina          11:00–12:00
+  [14, 2, 18,  0],  // Full Body Blast — Carla   18:00–19:00
+  [2,  2, 19,  0],  // Spinning — Carla          19:00–20:00
 
-  // Thursday
-  [0, 3, 7, 0],    // HIIT (Rayan) — Thu 7:00
-  [6, 3, 10, 0],   // Sculpt (Yasmina) — Thu 10:00
-  [13, 3, 12, 0],  // Core & Stretching (Carla) — Thu 12:00
-  [10, 3, 18, 0],  // Boxing (Ziad) — Thu 18:00
-  [8, 3, 19, 0],   // Kangoo Jump (Erika) — Thu 19:00
+  // ── Thursday ────────────────────────────────────────
+  [0,  3,  9,  0],  // HIIT — Rayan              09:00–10:00
+  [7,  3, 10,  0],  // ABS Express — Rayan       10:00–10:30 (30 min)
+  [6,  3, 12,  0],  // Sculpt — Yasmina          12:00–13:00
+  [0,  3, 18,  0],  // HIIT — Rayan              18:00–19:00
+  [12, 3, 19,  0],  // Core & Stretching — Rayan 19:00–20:00
 
-  // Friday
-  [1, 4, 6, 30],   // FIIT (Ziad) — Fri 6:30
-  [4, 4, 9, 0],    // Glutes (Rayan) — Fri 9:00
-  [7, 4, 12, 0],   // ABS Express (Rayan) — Fri 12:00
-  [2, 4, 18, 0],   // Spinning (Carla) — Fri 18:00
-  [15, 4, 19, 0],  // Step (Carla) — Fri 19:00
-  [12, 4, 20, 0],  // Core & Stretching (Rayan) — Fri 20:00
+  // ── Friday ──────────────────────────────────────────
+  [1,  4,  9,  0],  // FIIT — Ziad      09:00–10:00
+  [3,  4, 10,  0],  // Spinning — Ziad  10:00–11:00
+  [15, 4, 18,  0],  // Step — Carla     18:00–19:00
+  [2,  4, 19,  0],  // Spinning — Carla 19:00–20:00
 
-  // Saturday
-  [0, 5, 8, 0],    // HIIT (Rayan) — Sat 8:00
-  [2, 5, 9, 0],    // Spinning (Carla) — Sat 9:00
-  [6, 5, 10, 0],   // Sculpt (Yasmina) — Sat 10:00
-  [9, 5, 11, 0],   // Power Jump (Carla) — Sat 11:00
-  [14, 5, 12, 0],  // Full Body Blast (Carla) — Sat 12:00
-
-  // Sunday
-  [1, 6, 10, 0],   // FIIT (Ziad) — Sun 10:00
-  [8, 6, 11, 0],   // Kangoo Jump (Erika) — Sun 11:00
-  [13, 6, 12, 0],  // Core & Stretching (Carla) — Sun 12:00
-  [10, 6, 16, 0],  // Boxing (Ziad) — Sun 16:00
-  [11, 6, 15, 0],  // Kids (Ziad) — Sun 15:00
+  // ── Saturday ────────────────────────────────────────
+  [3,  5, 11,  0],  // Spinning — Ziad  11:00–12:00
 ];
 
 async function main() {

@@ -12,7 +12,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 import {
   CLASS_STYLE_LABELS,
   CLASS_STYLE_COLORS,
@@ -157,7 +156,7 @@ export function ScheduleClient({ classes, instructors, styles, levels }: Props) 
       {/* Grouped by day */}
       <div className="space-y-10">
         {Array.from(grouped.entries()).map(([dateKey, dayClasses]) => {
-          const date = new Date(dateKey);
+          const date = new Date(dateKey + "T12:00:00");
           const isToday = isSameDay(date, new Date());
 
           return (
@@ -227,7 +226,7 @@ function ClassCard({ cls }: { cls: YogaClassWithDetails }) {
               isFull
                 ? "text-red-500"
                 : isAlmostFull
-                ? "text-amber-600"
+                ? "text-amber-400"
                 : "text-stone-400"
             }`}
           >

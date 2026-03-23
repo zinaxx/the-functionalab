@@ -155,7 +155,7 @@ model Booking {
   updatedAt     DateTime      @updatedAt
 
   userId        String
-  user          User          @relation(fields: [userId], references: [id])
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   classId       String
   yogaClass     YogaClass     @relation(fields: [classId], references: [id])
 
@@ -173,7 +173,7 @@ model WaitlistEntry {
   updatedAt DateTime @updatedAt
 
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   classId   String
   yogaClass YogaClass @relation(fields: [classId], references: [id])
 
@@ -194,7 +194,7 @@ model Membership {
   updatedAt             DateTime         @updatedAt
 
   userId                String           @unique
-  user                  User             @relation(fields: [userId], references: [id])
+  user                  User             @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("memberships")
 }
@@ -212,7 +212,7 @@ model Payment {
   updatedAt        DateTime      @updatedAt
 
   userId           String
-  user             User          @relation(fields: [userId], references: [id])
+  user             User          @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("payments")

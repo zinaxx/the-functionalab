@@ -32,26 +32,24 @@ export async function POST(
     if (yogaClass.status === "CANCELLED") return NextResponse.json({ error: "Already cancelled" }, { status: 400 });
 
     // Cancel class + refund credits for all confirmed bookings
-    await prisma.$transaction(async (tx) => {
-      await tx.yogaClass.update({
-        where: { id: params.id },
-        data: { status: "CANCELLED" },
+    await prisma.yogaClass.update({
+      where: { id: params.id },
+      data: { status: "CANCELLED" },
+    });
+
+    for (const booking of yogaClass.bookings) {
+      await prisma.booking.update({
+        where: { id: booking.id },
+        data: { status: "CANCELLED", cancelledAt: new Date(), cancelReason: "Class cancelled by studio" },
       });
 
-      for (const booking of yogaClass.bookings) {
-        await tx.booking.update({
-          where: { id: booking.id },
-          data: { status: "CANCELLED", cancelledAt: new Date(), cancelReason: "Class cancelled by studio" },
+      if (booking.creditsUsed > 0) {
+        await prisma.user.update({
+          where: { id: booking.userId },
+          data: { creditBalance: { increment: booking.creditsUsed } },
         });
-
-        if (booking.creditsUsed > 0) {
-          await tx.user.update({
-            where: { id: booking.userId },
-            data: { creditBalance: { increment: booking.creditsUsed } },
-          });
-        }
       }
-    });
+    }
 
     // Notify all affected students
     for (const booking of yogaClass.bookings) {

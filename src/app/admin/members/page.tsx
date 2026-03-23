@@ -17,7 +17,7 @@ export default async function AdminMembersPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="font-display text-4xl font-light text-stone-800">Members</h1>
+      <h1 className="font-display text-4xl font-light text-white">Members</h1>
       <AdminMembersClient members={members} />
     </div>
   );

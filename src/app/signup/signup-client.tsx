@@ -70,7 +70,7 @@ export function SignupClient() {
         <div className="w-full max-w-sm text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#fd5227]/10 mb-6">
             <img
-              src="/Logo functionallab.jpeg"
+              src="/Logo without background.png"
               alt="The FunctionaLab"
               className="h-10 w-10 object-contain"
             />
@@ -93,7 +93,7 @@ export function SignupClient() {
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-4">
             <img
-              src="/Logo functionallab.jpeg"
+              src="/Logo without background.png"
               alt="The FunctionaLab"
               className="h-10 w-10 object-contain"
             />

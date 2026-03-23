@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { LayoutDashboard, BookOpen, Users, BarChart3, Settings } from "lucide-react";
+import { getOrCreateDbUser } from "@/lib/get-or-create-user";
+import { LayoutDashboard, BookOpen, Users, BarChart3 } from "lucide-react";
 
 const navItems = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard },
@@ -20,15 +21,16 @@ export default async function AdminLayout({
   if (!user) redirect("/login");
   if (user.email !== process.env.ADMIN_EMAIL) redirect("/");
 
+  // Ensure the admin has a Prisma user record linked to their Supabase account
+  await getOrCreateDbUser(user);
+
   return (
     <div className="min-h-screen bg-[#0A0A0A] pt-16">
-      <div className="bg-[#141414] border-b border-[#2A2A2A]">
-        <div className="mx-auto max-w-7xl px-6 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-1">
-            <Settings className="h-4 w-4 text-stone-500 mr-2" />
-            <span className="font-body text-sm font-medium text-stone-400">Admin</span>
-          </div>
-          <Link href="/" className="font-body text-xs text-stone-500 hover:text-stone-300">
+
+      <div className="bg-[#fd5227]/10 border-b border-[#fd5227]/20">
+        <div className="mx-auto max-w-7xl px-6 py-2 flex items-center justify-between">
+          <span className="text-xs font-body font-semibold text-[#fd5227] uppercase tracking-widest">Admin Panel</span>
+          <Link href="/" className="text-xs font-body text-stone-500 hover:text-stone-300 transition-colors">
             ← Back to site
           </Link>
         </div>

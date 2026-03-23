@@ -61,7 +61,7 @@ export function LoginClient() {
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-5">
             <img
-              src="/Logo functionallab.jpeg"
+              src="/Logo without background.png"
               alt="The FunctionaLab"
               className="h-10 w-10 object-contain"
             />

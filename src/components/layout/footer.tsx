@@ -10,7 +10,7 @@ export function Footer() {
           <div className="md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
               <img
-                src="/Logo functionallab.jpeg"
+                src="/Logo without background.png"
                 alt="The FunctionaLab"
                 className="h-10 w-10 object-contain"
               />

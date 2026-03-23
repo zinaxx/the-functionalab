@@ -77,13 +77,13 @@ export function Navbar() {
           : "bg-transparent"
       )}
     >
-      <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
+      <nav className="mx-auto flex h-24 max-w-6xl items-center justify-between px-6">
         {/* Logo */}
         <Link href="/" className="flex items-center group">
           <img
-            src="/Logo functionallab.jpeg"
+            src="/Logo without background.png"
             alt="The FunctionaLab"
-            className="h-10 w-10 object-contain"
+            className="h-20 w-20 object-contain transition-transform duration-300 group-hover:scale-110"
           />
           <span className="ml-2 font-display text-xl font-bold text-white tracking-tight">
             The <span className="text-[#fd5227]">FunctionaLab</span>
@@ -170,9 +170,9 @@ export function Navbar() {
           <SheetContent side="right" className="w-72 bg-[#141414] border-[#2A2A2A]">
             <div className="flex items-center gap-2 mb-8">
               <img
-                src="/Logo functionallab.jpeg"
+                src="/Logo without background.png"
                 alt="The FunctionaLab"
-                className="h-10 w-10 object-contain"
+                className="h-10 w-10 object-contain transition-transform duration-300 group-hover:scale-110"
               />
               <span className="font-display text-xl font-bold text-white">
                 The <span className="text-[#fd5227]">FunctionaLab</span>

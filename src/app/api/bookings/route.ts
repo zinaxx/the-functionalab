@@ -44,26 +44,22 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Insufficient credits" }, { status: 400 });
     }
 
-    // Create booking + deduct credits in a transaction
-    const booking = await prisma.$transaction(async (tx) => {
-      const booking = await tx.booking.create({
-        data: {
-          userId: dbUser.id,
-          classId,
-          creditsUsed: hasActiveMembership ? 0 : yogaClass.creditCost,
-          status: "CONFIRMED",
-        },
-      });
-
-      if (!hasActiveMembership) {
-        await tx.user.update({
-          where: { id: dbUser.id },
-          data: { creditBalance: { decrement: yogaClass.creditCost } },
-        });
-      }
-
-      return booking;
+    // Create booking + deduct credits
+    const booking = await prisma.booking.create({
+      data: {
+        userId: dbUser.id,
+        classId,
+        creditsUsed: hasActiveMembership ? 0 : yogaClass.creditCost,
+        status: "CONFIRMED",
+      },
     });
+
+    if (!hasActiveMembership) {
+      await prisma.user.update({
+        where: { id: dbUser.id },
+        data: { creditBalance: { decrement: yogaClass.creditCost } },
+      });
+    }
 
     // Send confirmation email (non-blocking)
     sendBookingConfirmedEmail({

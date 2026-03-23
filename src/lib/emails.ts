@@ -2,40 +2,47 @@ import { resend, FROM_EMAIL } from "@/lib/resend";
 import { format } from "date-fns";
 
 function studioEmailWrapper(content: string): string {
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
   return `
     <!DOCTYPE html>
     <html>
     <head>
       <meta charset="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
       <style>
-        body { font-family: 'DM Sans', Arial, sans-serif; background: #0A0A0A; margin: 0; padding: 0; color: #FFFFFF; }
+        @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap');
+        body { font-family: 'Barlow', Arial, sans-serif; background: #0A0A0A; margin: 0; padding: 0; color: #FFFFFF; }
         .container { max-width: 560px; margin: 40px auto; background: #141414; border-radius: 16px; overflow: hidden; border: 1px solid #2A2A2A; }
-        .header { background: #fd5227; padding: 32px; text-align: center; }
-        .header h1 { color: white; font-family: Georgia, serif; font-size: 24px; font-weight: 400; margin: 0; letter-spacing: 0.05em; }
-        .header p { color: rgba(255,255,255,0.8); font-size: 12px; margin: 4px 0 0; letter-spacing: 0.1em; text-transform: uppercase; }
+        .header { background: #111111; padding: 32px 40px; text-align: center; border-bottom: 2px solid #fd5227; }
+        .header img { width: 64px; height: 64px; object-fit: contain; margin-bottom: 12px; }
+        .header h1 { color: white; font-family: 'Barlow Condensed', Arial Narrow, sans-serif; font-size: 28px; font-weight: 800; margin: 0; letter-spacing: 0.08em; text-transform: uppercase; }
+        .header h1 span { color: #fd5227; }
+        .header p { color: #6B7280; font-family: 'Barlow Condensed', Arial Narrow, sans-serif; font-size: 11px; margin: 6px 0 0; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; }
         .body { padding: 36px 40px; }
-        .body p { font-size: 15px; line-height: 1.7; color: #A3A3A3; margin: 0 0 16px; }
+        .body p { font-family: 'Barlow', Arial, sans-serif; font-size: 15px; line-height: 1.7; color: #A3A3A3; margin: 0 0 16px; }
+        .body strong { color: #FFFFFF; }
         .detail-card { background: #1A1A1A; border-radius: 12px; padding: 20px 24px; margin: 24px 0; border: 1px solid #2A2A2A; }
-        .detail-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #2A2A2A; font-size: 14px; }
+        .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #2A2A2A; font-size: 14px; }
         .detail-row:last-child { border-bottom: none; }
-        .detail-label { color: #6B7280; }
-        .detail-value { color: #FFFFFF; font-weight: 500; }
-        .cta-button { display: inline-block; background: #fd5227; color: white; text-decoration: none; padding: 12px 28px; border-radius: 24px; font-size: 14px; font-weight: 500; margin: 8px 0; }
-        .footer { padding: 24px 40px; border-top: 1px solid #2A2A2A; text-align: center; font-size: 12px; color: #6B7280; }
+        .detail-label { font-family: 'Barlow Condensed', Arial Narrow, sans-serif; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #6B7280; font-size: 12px; padding-top: 1px; }
+        .detail-value { font-family: 'Barlow', Arial, sans-serif; color: #FFFFFF; font-weight: 500; text-align: right; }
+        .cta-button { display: inline-block; background: #fd5227; color: white; text-decoration: none; padding: 13px 32px; border-radius: 8px; font-family: 'Barlow Condensed', Arial Narrow, sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin: 8px 0; }
+        .footer { padding: 24px 40px; border-top: 1px solid #2A2A2A; text-align: center; font-family: 'Barlow', Arial, sans-serif; font-size: 12px; color: #6B7280; }
         .footer a { color: #fd5227; text-decoration: none; }
       </style>
     </head>
     <body>
       <div class="container">
         <div class="header">
-          <h1>The FunctionaLab</h1>
-          <p>Jounieh · Train For Life</p>
+          <h1>The <span>Functiona</span>Lab</h1>
+          <p>Jounieh &nbsp;·&nbsp; Train For Life</p>
         </div>
         <div class="body">${content}</div>
         <div class="footer">
-          <p>Jounieh, Lebanon · <a href="mailto:hello@functionallab.lb">hello@functionallab.lb</a></p>
-          <p><a href="${process.env.NEXT_PUBLIC_APP_URL}">functionallab.lb</a></p>
+          <p>Jounieh, Lebanon &nbsp;·&nbsp; <a href="mailto:hello@functionallab.lb">hello@functionallab.lb</a></p>
+          <p><a href="${appUrl}">${appUrl.replace(/https?:\/\//, "")}</a></p>
         </div>
       </div>
     </body>
@@ -182,6 +189,31 @@ export async function sendPaymentConfirmedEmail({
     from: FROM_EMAIL,
     to: userEmail,
     subject: `Payment confirmed — ${description}`,
+    html,
+  });
+}
+
+export async function sendAdminRemovedEmail(data: ClassEmailData) {
+  const timeStr = `${format(data.startsAt, "EEEE, MMMM d")} · ${format(data.startsAt, "h:mm a")} – ${format(data.endsAt, "h:mm a")}`;
+  const html = studioEmailWrapper(`
+    <p>Hi ${data.userName || "there"},</p>
+    <p>Your booking for <strong>${data.className}</strong> has been removed by our team.</p>
+    <div class="detail-card">
+      <div class="detail-row"><span class="detail-label">Class</span><span class="detail-value">${data.className}</span></div>
+      <div class="detail-row"><span class="detail-label">Coach</span><span class="detail-value">${data.instructorName}</span></div>
+      <div class="detail-row"><span class="detail-label">When</span><span class="detail-value">${timeStr}</span></div>
+    </div>
+    <p>If you have any questions, don't hesitate to reach out to us at <a href="mailto:hello@functionallab.lb" style="color:#fd5227;">hello@functionallab.lb</a> or call <strong>81 651 151</strong>.</p>
+    <p style="text-align:center; margin-top: 28px;">
+      <a href="${process.env.NEXT_PUBLIC_APP_URL}/schedule" class="cta-button">Browse schedule</a>
+    </p>
+    <p style="margin-top: 24px;">Train hard,<br /><strong>The FunctionaLab team</strong></p>
+  `);
+
+  return resend.emails.send({
+    from: FROM_EMAIL,
+    to: data.userEmail,
+    subject: `Booking removed — ${data.className}`,
     html,
   });
 }
