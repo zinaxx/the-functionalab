@@ -9,7 +9,10 @@ import { PRICING_PLANS } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 
 interface MembershipData {
-  creditBalance: number;
+  regularCredits: number;
+  kidsCredits: number;
+  boxingCredits: number;
+  sculptCredits: number;
   membership: {
     id: string;
     status: string;
@@ -132,11 +135,14 @@ export function MembershipClient() {
           <div className="space-y-3">
             <div className="flex items-start gap-3 p-4 bg-[#1A1A1A] border border-[#2A2A2A] rounded-xl">
               <CreditCard className="h-5 w-5 text-stone-500 mt-0.5 shrink-0" />
-              <div>
-                <p className="font-body font-medium text-stone-300">Pay-as-you-go</p>
-                <p className="font-body text-sm text-stone-500 mt-0.5">
-                  {data?.creditBalance ?? 0} credit{(data?.creditBalance ?? 0) !== 1 ? "s" : ""} remaining
-                </p>
+              <div className="flex-1">
+                <p className="font-body font-medium text-stone-300">Credits</p>
+                <div className="grid grid-cols-2 gap-x-4 mt-1 text-sm font-body text-stone-500">
+                  <span>Regular: {data?.regularCredits ?? 0}</span>
+                  <span>Sculpt: {data?.sculptCredits ?? 0}</span>
+                  <span>Boxing: {data?.boxingCredits ?? 0}</span>
+                  <span>Kids: {data?.kidsCredits ?? 0}</span>
+                </div>
               </div>
             </div>
             <Link href="/pricing">
@@ -155,13 +161,13 @@ export function MembershipClient() {
             {PRICING_PLANS.filter((p) => p.type === "one-time").map((plan) => (
               <div
                 key={plan.id}
-                className={`rounded-2xl border p-4 ${plan.popular ? "border-[#fd5227] bg-[#fd5227]/5" : "border-[#2A2A2A] bg-[#1A1A1A]"}`}
+                className="rounded-2xl border p-4 border-[#2A2A2A] bg-[#1A1A1A]"
               >
                 <p className="font-display text-lg font-medium text-white">{plan.name}</p>
                 <p className="font-display text-2xl font-light text-white mt-1">${plan.price}</p>
                 <p className="font-body text-sm text-stone-500 mt-0.5">{plan.credits} credits</p>
                 <Button
-                  className={`w-full mt-3 ${plan.popular ? "bg-[#fd5227] hover:bg-[#e04420] text-white" : "bg-[#2A2A2A] hover:bg-[#3A3A3A] text-white border-0"}`}
+                  className="w-full mt-3 bg-[#2A2A2A] hover:bg-[#3A3A3A] text-white border-0"
                   size="sm"
                   onClick={() => handleCheckout(plan.id)}
                   disabled={checkoutLoading === plan.id}

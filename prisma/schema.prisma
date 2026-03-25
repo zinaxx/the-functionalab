@@ -53,6 +53,7 @@ enum BookingStatus {
 
 enum MembershipType {
   MONTHLY_UNLIMITED
+  SCULPT_PACKAGE
 }
 
 enum MembershipStatus {
@@ -86,7 +87,10 @@ model User {
   phone             String?
   healthNotes       String?
   role              Role      @default(USER)
-  creditBalance     Int       @default(0)
+  regularCredits    Int       @default(0)
+  kidsCredits       Int       @default(0)
+  boxingCredits     Int       @default(0)
+  sculptCredits     Int       @default(0)
   stripeCustomerId  String?   @unique
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt

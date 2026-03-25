@@ -22,7 +22,10 @@ export async function GET() {
     ]);
 
     return NextResponse.json({
-      creditBalance: dbUser.creditBalance,
+      regularCredits: dbUser.regularCredits,
+      kidsCredits: dbUser.kidsCredits,
+      boxingCredits: dbUser.boxingCredits,
+      sculptCredits: dbUser.sculptCredits,
       membership,
       payments,
     });

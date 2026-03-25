@@ -118,68 +118,145 @@ export const LEVEL_COLORS: Record<ClassLevel, string> = {
   ADVANCED: "bg-violet-500/20 text-violet-400",
 };
 
+// ─── Class Categories ────────────────────────────────────────
+
+export type ClassCategory = "REGULAR" | "KIDS" | "BOXING" | "SCULPT";
+
+export function getClassCategory(style: ClassStyle): ClassCategory {
+  if (style === "BOXING") return "BOXING";
+  if (style === "KIDS") return "KIDS";
+  if (style === "SCULPT") return "SCULPT";
+  return "REGULAR";
+}
+
+// Returns the User field name for a given category's credit pool
+export function getCreditField(category: ClassCategory): "regularCredits" | "kidsCredits" | "boxingCredits" | "sculptCredits" {
+  switch (category) {
+    case "KIDS": return "kidsCredits";
+    case "BOXING": return "boxingCredits";
+    case "SCULPT": return "sculptCredits";
+    default: return "regularCredits";
+  }
+}
+
 // ─── Pricing ────────────────────────────────────────────────
 
+export type CreditType = "regular" | "kids" | "boxing" | "sculpt";
+
 export const PRICING_PLANS = [
+  // ── Classes ──
   {
-    id: "starter",
-    name: "8 Sessions",
-    price: 80,
-    credits: 8,
-    type: "one-time" as const,
-    stripePriceEnv: "STRIPE_PRICE_5_CLASSES",
-    features: [
-      "8 class credits",
-      "Valid for 3 months",
-      "All training styles",
-      "Book up to 14 days ahead",
-    ],
-  },
-  {
-    id: "regular",
-    name: "16 Sessions",
-    price: 140,
-    credits: 16,
-    type: "one-time" as const,
-    stripePriceEnv: "STRIPE_PRICE_10_CLASSES",
-    popular: true,
-    features: [
-      "16 class credits",
-      "Valid for 3 months",
-      "All training styles",
-      "Book up to 14 days ahead",
-      "Best value per session",
-    ],
-  },
-  {
-    id: "committed",
-    name: "32 Sessions",
-    price: 240,
-    credits: 32,
-    type: "one-time" as const,
-    stripePriceEnv: "STRIPE_PRICE_20_CLASSES",
-    features: [
-      "32 class credits",
-      "Valid for 6 months",
-      "All training styles",
-      "Book up to 14 days ahead",
-      "Priority waitlist",
-    ],
-  },
-  {
-    id: "unlimited",
-    name: "Monthly Unlimited",
-    price: 120,
+    id: "monthly",
+    name: "Monthly Membership",
+    price: 0, // price set at studio — contact to purchase
     credits: null,
+    creditType: null as CreditType | null,
+    givesSculptPackage: false,
     type: "subscription" as const,
     stripePriceEnv: "STRIPE_PRICE_MONTHLY",
-    features: [
-      "Unlimited classes",
-      "All training styles",
-      "Book up to 14 days ahead",
-      "Priority waitlist",
-      "Cancel anytime",
-    ],
+  },
+  {
+    id: "regular-single",
+    name: "Single Class",
+    price: 10,
+    credits: 1,
+    creditType: "regular" as CreditType,
+    givesSculptPackage: false,
+    type: "one-time" as const,
+    stripePriceEnv: "STRIPE_PRICE_REGULAR_SINGLE",
+  },
+  // ── Kids ──
+  {
+    id: "kids-4",
+    name: "Kids — 4 Classes",
+    price: 50,
+    credits: 4,
+    creditType: "kids" as CreditType,
+    givesSculptPackage: false,
+    type: "one-time" as const,
+    stripePriceEnv: "STRIPE_PRICE_KIDS_4",
+  },
+  {
+    id: "kids-single",
+    name: "Kids — Single Class",
+    price: 15,
+    credits: 1,
+    creditType: "kids" as CreditType,
+    givesSculptPackage: false,
+    type: "one-time" as const,
+    stripePriceEnv: "STRIPE_PRICE_KIDS_SINGLE",
+  },
+  // ── Boxing ──
+  {
+    id: "boxing-4",
+    name: "Boxing — 4 Classes",
+    price: 50,
+    credits: 4,
+    creditType: "boxing" as CreditType,
+    givesSculptPackage: false,
+    type: "one-time" as const,
+    stripePriceEnv: "STRIPE_PRICE_BOXING_4",
+  },
+  {
+    id: "boxing-single",
+    name: "Boxing — Single Class",
+    price: 15,
+    credits: 1,
+    creditType: "boxing" as CreditType,
+    givesSculptPackage: false,
+    type: "one-time" as const,
+    stripePriceEnv: "STRIPE_PRICE_BOXING_SINGLE",
+  },
+  // ── Sculpt ──
+  {
+    id: "sculpt-8",
+    name: "Sculpt — 8 Classes",
+    price: 90,
+    credits: 8,
+    creditType: "sculpt" as CreditType,
+    givesSculptPackage: true,
+    type: "one-time" as const,
+    stripePriceEnv: "STRIPE_PRICE_SCULPT_8",
+  },
+  {
+    id: "sculpt-8-gym",
+    name: "Sculpt — 8 Classes + Gym",
+    price: 150,
+    credits: 8,
+    creditType: "sculpt" as CreditType,
+    givesSculptPackage: true,
+    type: "one-time" as const,
+    stripePriceEnv: "STRIPE_PRICE_SCULPT_8_GYM",
+  },
+  {
+    id: "sculpt-12",
+    name: "Sculpt — 12 Classes",
+    price: 120,
+    credits: 12,
+    creditType: "sculpt" as CreditType,
+    givesSculptPackage: true,
+    type: "one-time" as const,
+    stripePriceEnv: "STRIPE_PRICE_SCULPT_12",
+  },
+  {
+    id: "sculpt-12-gym",
+    name: "Sculpt — 12 Classes + Gym",
+    price: 160,
+    credits: 12,
+    creditType: "sculpt" as CreditType,
+    givesSculptPackage: true,
+    type: "one-time" as const,
+    stripePriceEnv: "STRIPE_PRICE_SCULPT_12_GYM",
+  },
+  {
+    id: "sculpt-single",
+    name: "Sculpt — Single Class",
+    price: 15,
+    credits: 1,
+    creditType: "sculpt" as CreditType,
+    givesSculptPackage: false,
+    type: "one-time" as const,
+    stripePriceEnv: "STRIPE_PRICE_SCULPT_SINGLE",
   },
 ];
 

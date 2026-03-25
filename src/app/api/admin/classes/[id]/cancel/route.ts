@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { sendClassCancelledEmail } from "@/lib/emails";
+import { getClassCategory, getCreditField } from "@/lib/utils";
 
 async function assertAdmin() {
   const supabase = await createClient();
@@ -31,12 +32,16 @@ export async function POST(
     if (!fitnessClass) return NextResponse.json({ error: "Class not found" }, { status: 404 });
     if (fitnessClass.status === "CANCELLED") return NextResponse.json({ error: "Already cancelled" }, { status: 400 });
 
-    // Cancel class + refund credits for all confirmed bookings
+    const category = getClassCategory(fitnessClass.style);
+    const creditField = getCreditField(category);
+
+    // Cancel class
     await prisma.fitnessClass.update({
       where: { id: params.id },
       data: { status: "CANCELLED" },
     });
 
+    // Refund credits for all confirmed bookings
     for (const booking of fitnessClass.bookings) {
       await prisma.booking.update({
         where: { id: booking.id },
@@ -46,7 +51,7 @@ export async function POST(
       if (booking.creditsUsed > 0) {
         await prisma.user.update({
           where: { id: booking.userId },
-          data: { creditBalance: { increment: booking.creditsUsed } },
+          data: { [creditField]: { increment: booking.creditsUsed } },
         });
       }
     }

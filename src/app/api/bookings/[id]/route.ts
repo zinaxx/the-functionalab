@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { getOrCreateDbUser } from "@/lib/get-or-create-user";
 import { isCancellable } from "@/lib/utils";
 import { sendLateCancelEmail, sendBookingConfirmedEmail } from "@/lib/emails";
+import { getClassCategory, getCreditField } from "@/lib/utils";
 
 export async function DELETE(
   request: Request,
@@ -40,11 +41,13 @@ export async function DELETE(
       data: { status: newStatus, cancelledAt: new Date() },
     });
 
-    // Refund credits if eligible
+    // Refund credits to the correct pool if eligible
     if (canRefund && booking.creditsUsed > 0) {
+      const category = getClassCategory(booking.fitnessClass.style);
+      const creditField = getCreditField(category);
       await prisma.user.update({
         where: { id: dbUser.id },
-        data: { creditBalance: { increment: booking.creditsUsed } },
+        data: { [creditField]: { increment: booking.creditsUsed } },
       });
     }
 
@@ -52,16 +55,15 @@ export async function DELETE(
     const firstWaiting = await prisma.waitlistEntry.findFirst({
       where: { classId: booking.classId },
       orderBy: { position: "asc" },
-      include: { user: true },
+      include: { user: { include: { membership: true } } },
     });
 
     if (firstWaiting) {
-      const hasActiveMembership = await prisma.membership.findFirst({
-        where: { userId: firstWaiting.userId, status: "ACTIVE" },
-      });
-
-      const waitingUser = firstWaiting.user;
-      const creditCost = hasActiveMembership ? 0 : booking.fitnessClass.creditCost;
+      const category = getClassCategory(booking.fitnessClass.style);
+      const creditField = getCreditField(category);
+      const hasActiveMembership = firstWaiting.user.membership?.status === "ACTIVE";
+      const isFreeWithMembership = category === "REGULAR" && hasActiveMembership;
+      const creditCost = isFreeWithMembership ? 0 : 1;
 
       await prisma.booking.upsert({
         where: { userId_classId: { userId: firstWaiting.userId, classId: booking.classId } },
@@ -74,10 +76,10 @@ export async function DELETE(
         },
       });
 
-      if (!hasActiveMembership && creditCost > 0) {
+      if (!isFreeWithMembership && creditCost > 0) {
         await prisma.user.update({
           where: { id: firstWaiting.userId },
-          data: { creditBalance: { decrement: creditCost } },
+          data: { [creditField]: { decrement: creditCost } },
         });
       }
 
@@ -95,8 +97,8 @@ export async function DELETE(
       }
 
       sendBookingConfirmedEmail({
-        userName: waitingUser.name ?? "",
-        userEmail: waitingUser.email,
+        userName: firstWaiting.user.name ?? "",
+        userEmail: firstWaiting.user.email,
         className: booking.fitnessClass.title,
         instructorName: booking.fitnessClass.instructor.name,
         startsAt: booking.fitnessClass.startsAt,

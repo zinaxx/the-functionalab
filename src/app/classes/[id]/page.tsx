@@ -10,6 +10,8 @@ import {
   CLASS_STYLE_COLORS,
   LEVEL_LABELS,
   LEVEL_COLORS,
+  getClassCategory,
+  getCreditField,
 } from "@/lib/utils";
 import { BookButton } from "@/components/classes/book-button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -244,7 +246,7 @@ export default async function ClassDetailPage({ params }: Props) {
                 existingBookingId={existingBooking?.id ?? null}
                 existingBookingStatus={existingBooking?.status ?? null}
                 onWaitlist={onWaitlist}
-                creditBalance={dbUser?.creditBalance ?? 0}
+                creditBalance={dbUser ? dbUser[getCreditField(getClassCategory(cls.style))] : 0}
                 creditCost={cls.creditCost}
                 hasActiveMembership={hasActiveMembership}
                 startsAt={cls.startsAt}

@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { getOrCreateDbUser } from "@/lib/get-or-create-user";
 import { sendBookingConfirmedEmail } from "@/lib/emails";
+import { getClassCategory, getCreditField } from "@/lib/utils";
 
 export async function POST(request: Request) {
   try {
@@ -38,26 +39,36 @@ export async function POST(request: Request) {
     const spotsLeft = fitnessClass.capacity - fitnessClass._count.bookings;
     if (spotsLeft <= 0) return NextResponse.json({ error: "Class is full" }, { status: 400 });
 
-    // Check credits / membership
+    // Determine category and credit entitlement
+    const category = getClassCategory(fitnessClass.style);
+    const creditField = getCreditField(category);
     const hasActiveMembership = dbUser.membership?.status === "ACTIVE";
-    if (!hasActiveMembership && dbUser.creditBalance < fitnessClass.creditCost) {
-      return NextResponse.json({ error: "Insufficient credits" }, { status: 400 });
+
+    // REGULAR classes are free with any active membership (monthly or sculpt package)
+    const isFreeWithMembership = category === "REGULAR" && hasActiveMembership;
+
+    if (!isFreeWithMembership) {
+      if (dbUser[creditField] < 1) {
+        const categoryLabel = category === "REGULAR" ? "regular" : category.toLowerCase();
+        return NextResponse.json({ error: `Insufficient ${categoryLabel} credits` }, { status: 400 });
+      }
     }
 
-    // Create booking + deduct credits
+    // Create booking
     const booking = await prisma.booking.create({
       data: {
         userId: dbUser.id,
         classId,
-        creditsUsed: hasActiveMembership ? 0 : fitnessClass.creditCost,
+        creditsUsed: isFreeWithMembership ? 0 : 1,
         status: "CONFIRMED",
       },
     });
 
-    if (!hasActiveMembership) {
+    // Deduct credits if not covered by membership
+    if (!isFreeWithMembership) {
       await prisma.user.update({
         where: { id: dbUser.id },
-        data: { creditBalance: { decrement: fitnessClass.creditCost } },
+        data: { [creditField]: { decrement: 1 } },
       });
     }
 

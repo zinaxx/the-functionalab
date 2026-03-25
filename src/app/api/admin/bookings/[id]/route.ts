@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { sendAdminRemovedEmail, sendBookingConfirmedEmail } from "@/lib/emails";
+import { getClassCategory, getCreditField } from "@/lib/utils";
 
 async function assertAdmin() {
   const supabase = await createClient();
@@ -30,18 +31,22 @@ export async function DELETE(
     if (!booking) return NextResponse.json({ error: "Booking not found" }, { status: 404 });
     if (booking.status !== "CONFIRMED") return NextResponse.json({ error: "Booking is not active" }, { status: 400 });
 
+    const category = getClassCategory(booking.fitnessClass.style);
+    const creditField = getCreditField(category);
+
     let promotedUser: { name: string | null; email: string } | null = null;
 
-    // Cancel the booking and refund credits
+    // Cancel the booking
     await prisma.booking.update({
       where: { id: params.id },
       data: { status: "CANCELLED", cancelledAt: new Date() },
     });
 
+    // Refund credits to the correct pool
     if (booking.creditsUsed > 0) {
       await prisma.user.update({
         where: { id: booking.userId },
-        data: { creditBalance: { increment: booking.creditsUsed } },
+        data: { [creditField]: { increment: booking.creditsUsed } },
       });
     }
 
@@ -49,14 +54,13 @@ export async function DELETE(
     const firstWaiting = await prisma.waitlistEntry.findFirst({
       where: { classId: booking.classId },
       orderBy: { position: "asc" },
-      include: { user: true },
+      include: { user: { include: { membership: true } } },
     });
 
     if (firstWaiting) {
-      const hasMembership = await prisma.membership.findFirst({
-        where: { userId: firstWaiting.userId, status: "ACTIVE" },
-      });
-      const creditCost = hasMembership ? 0 : booking.fitnessClass.creditCost;
+      const hasActiveMembership = firstWaiting.user.membership?.status === "ACTIVE";
+      const isFreeWithMembership = category === "REGULAR" && hasActiveMembership;
+      const creditCost = isFreeWithMembership ? 0 : 1;
 
       await prisma.booking.upsert({
         where: { userId_classId: { userId: firstWaiting.userId, classId: booking.classId } },
@@ -69,10 +73,10 @@ export async function DELETE(
         },
       });
 
-      if (!hasMembership && creditCost > 0) {
+      if (!isFreeWithMembership && creditCost > 0) {
         await prisma.user.update({
           where: { id: firstWaiting.userId },
-          data: { creditBalance: { decrement: creditCost } },
+          data: { [creditField]: { decrement: creditCost } },
         });
       }
 
@@ -107,8 +111,8 @@ export async function DELETE(
     // Notify the promoted waitlist member
     if (promotedUser) {
       sendBookingConfirmedEmail({
-        userName: (promotedUser as any).name ?? "",
-        userEmail: (promotedUser as any).email,
+        userName: promotedUser.name ?? "",
+        userEmail: promotedUser.email,
         className: booking.fitnessClass.title,
         instructorName: booking.fitnessClass.instructor.name,
         startsAt: booking.fitnessClass.startsAt,

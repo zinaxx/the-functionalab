@@ -50,26 +50,7 @@ export default async function DashboardPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        <div className="rounded-2xl bg-[#141414] border border-[#2A2A2A] p-5">
-          <div className="flex items-center gap-2 mb-2">
-            <CreditCard className="h-4 w-4 text-[#fd5227]" />
-            <span className="text-xs font-body text-stone-500 uppercase tracking-wide">Credits</span>
-          </div>
-          <p className="font-display text-3xl font-light text-white">{dbUser.creditBalance}</p>
-          <Link href="/pricing" className="text-xs text-[#fd5227] hover:text-[#fd5227]/80 font-body mt-1 inline-block">
-            Buy more →
-          </Link>
-        </div>
-
-        <div className="rounded-2xl bg-[#141414] border border-[#2A2A2A] p-5">
-          <div className="flex items-center gap-2 mb-2">
-            <Calendar className="h-4 w-4 text-[#fd5227]" />
-            <span className="text-xs font-body text-stone-500 uppercase tracking-wide">Upcoming</span>
-          </div>
-          <p className="font-display text-3xl font-light text-white">{upcomingBookings.length}</p>
-          <span className="text-xs text-stone-500 font-body">class{upcomingBookings.length !== 1 ? "es" : ""} booked</span>
-        </div>
-
+        {/* Membership status */}
         <div className="rounded-2xl bg-[#141414] border border-[#2A2A2A] p-5 col-span-2 md:col-span-1">
           <div className="flex items-center gap-2 mb-2">
             <CheckCircle2 className="h-4 w-4 text-[#fd5227]" />
@@ -77,7 +58,9 @@ export default async function DashboardPage() {
           </div>
           {membership?.status === "ACTIVE" ? (
             <>
-              <p className="font-display text-lg font-medium text-[#fd5227]">Unlimited Monthly</p>
+              <p className="font-display text-lg font-medium text-[#fd5227]">
+                {membership.type === "SCULPT_PACKAGE" ? "Sculpt Package" : "Monthly Unlimited"}
+              </p>
               {membership.currentPeriodEnd && (
                 <p className="text-xs text-stone-500 font-body mt-1">
                   Renews {format(membership.currentPeriodEnd, "MMM d")}
@@ -92,6 +75,45 @@ export default async function DashboardPage() {
               </Link>
             </>
           )}
+        </div>
+
+        {/* Upcoming bookings */}
+        <div className="rounded-2xl bg-[#141414] border border-[#2A2A2A] p-5">
+          <div className="flex items-center gap-2 mb-2">
+            <Calendar className="h-4 w-4 text-[#fd5227]" />
+            <span className="text-xs font-body text-stone-500 uppercase tracking-wide">Upcoming</span>
+          </div>
+          <p className="font-display text-3xl font-light text-white">{upcomingBookings.length}</p>
+          <span className="text-xs text-stone-500 font-body">class{upcomingBookings.length !== 1 ? "es" : ""} booked</span>
+        </div>
+
+        {/* Credits breakdown */}
+        <div className="rounded-2xl bg-[#141414] border border-[#2A2A2A] p-5">
+          <div className="flex items-center gap-2 mb-2">
+            <CreditCard className="h-4 w-4 text-[#fd5227]" />
+            <span className="text-xs font-body text-stone-500 uppercase tracking-wide">Credits</span>
+          </div>
+          <div className="space-y-1 text-sm font-body">
+            <div className="flex justify-between">
+              <span className="text-stone-500">Regular</span>
+              <span className="text-white font-medium">{dbUser.regularCredits}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-stone-500">Sculpt</span>
+              <span className="text-white font-medium">{dbUser.sculptCredits}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-stone-500">Boxing</span>
+              <span className="text-white font-medium">{dbUser.boxingCredits}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-stone-500">Kids</span>
+              <span className="text-white font-medium">{dbUser.kidsCredits}</span>
+            </div>
+          </div>
+          <Link href="/pricing" className="text-xs text-[#fd5227] hover:text-[#fd5227]/80 font-body mt-2 inline-block">
+            Buy more →
+          </Link>
         </div>
       </div>
 
