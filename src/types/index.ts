@@ -1,7 +1,7 @@
 import type {
   User,
   Instructor,
-  YogaClass,
+  FitnessClass,
   Booking,
   WaitlistEntry,
   Membership,
@@ -20,7 +20,7 @@ import type {
 export type {
   User,
   Instructor,
-  YogaClass,
+  FitnessClass,
   Booking,
   WaitlistEntry,
   Membership,
@@ -40,22 +40,22 @@ export {
 
 // ─── Derived / Composite Types ──────────────────────────────
 
-/** YogaClass with its instructor loaded */
-export type YogaClassWithInstructor = YogaClass & {
+/** FitnessClass with its instructor loaded */
+export type FitnessClassWithInstructor = FitnessClass & {
   instructor: Instructor;
 };
 
-/** YogaClass with instructor + booking count (for schedule display) */
-export type YogaClassWithDetails = YogaClassWithInstructor & {
+/** FitnessClass with instructor + booking count (for schedule display) */
+export type FitnessClassWithDetails = FitnessClassWithInstructor & {
   _count: {
     bookings: number;
   };
   spotsLeft: number;
 };
 
-/** Booking with the yoga class + instructor (for user dashboard) */
+/** Booking with the fitness class + instructor (for user dashboard) */
 export type BookingWithClass = Booking & {
-  yogaClass: YogaClassWithInstructor;
+  fitnessClass: FitnessClassWithInstructor;
 };
 
 /** User with their active membership (if any) */
@@ -71,7 +71,7 @@ export type UserProfile = User & {
 
 /** WaitlistEntry with class info */
 export type WaitlistEntryWithClass = WaitlistEntry & {
-  yogaClass: YogaClassWithInstructor;
+  fitnessClass: FitnessClassWithInstructor;
 };
 
 /** Admin view of a member */

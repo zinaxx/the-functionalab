@@ -110,12 +110,12 @@ model Instructor {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
-  classes     YogaClass[]
+  classes     FitnessClass[]
 
   @@map("instructors")
 }
 
-model YogaClass {
+model FitnessClass {
   id            String      @id @default(cuid())
   title         String
   description   String?
@@ -141,7 +141,7 @@ model YogaClass {
   @@index([startsAt])
   @@index([style])
   @@index([instructorId])
-  @@map("yoga_classes")
+  @@map("classes")
 }
 
 model Booking {
@@ -157,7 +157,7 @@ model Booking {
   userId        String
   user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   classId       String
-  yogaClass     YogaClass     @relation(fields: [classId], references: [id])
+  fitnessClass  FitnessClass  @relation(fields: [classId], references: [id])
 
   @@unique([userId, classId])
   @@index([classId])
@@ -174,8 +174,8 @@ model WaitlistEntry {
 
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  classId   String
-  yogaClass YogaClass @relation(fields: [classId], references: [id])
+  classId      String
+  fitnessClass FitnessClass @relation(fields: [classId], references: [id])
 
   @@unique([userId, classId])
   @@index([classId, position])

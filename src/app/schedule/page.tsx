@@ -16,7 +16,7 @@ export const revalidate = 60;
 
 async function getClasses() {
   try {
-    const classes = await prisma.yogaClass.findMany({
+    const classes = await prisma.fitnessClass.findMany({
       where: {
         startsAt: { gte: startOfDay(new Date()), lte: addDays(new Date(), 14) },
         status: "SCHEDULED",

@@ -23,7 +23,7 @@ export async function DELETE(
       where: { id: params.id },
       include: {
         user: true,
-        yogaClass: { include: { instructor: true } },
+        fitnessClass: { include: { instructor: true } },
       },
     });
 
@@ -56,7 +56,7 @@ export async function DELETE(
       const hasMembership = await prisma.membership.findFirst({
         where: { userId: firstWaiting.userId, status: "ACTIVE" },
       });
-      const creditCost = hasMembership ? 0 : booking.yogaClass.creditCost;
+      const creditCost = hasMembership ? 0 : booking.fitnessClass.creditCost;
 
       await prisma.booking.upsert({
         where: { userId_classId: { userId: firstWaiting.userId, classId: booking.classId } },
@@ -97,11 +97,11 @@ export async function DELETE(
     sendAdminRemovedEmail({
       userName: booking.user.name ?? "",
       userEmail: booking.user.email,
-      className: booking.yogaClass.title,
-      instructorName: booking.yogaClass.instructor.name,
-      startsAt: booking.yogaClass.startsAt,
-      endsAt: booking.yogaClass.endsAt,
-      room: booking.yogaClass.room ?? "",
+      className: booking.fitnessClass.title,
+      instructorName: booking.fitnessClass.instructor.name,
+      startsAt: booking.fitnessClass.startsAt,
+      endsAt: booking.fitnessClass.endsAt,
+      room: booking.fitnessClass.room ?? "",
     }).catch(console.error);
 
     // Notify the promoted waitlist member
@@ -109,11 +109,11 @@ export async function DELETE(
       sendBookingConfirmedEmail({
         userName: (promotedUser as any).name ?? "",
         userEmail: (promotedUser as any).email,
-        className: booking.yogaClass.title,
-        instructorName: booking.yogaClass.instructor.name,
-        startsAt: booking.yogaClass.startsAt,
-        endsAt: booking.yogaClass.endsAt,
-        room: booking.yogaClass.room ?? "",
+        className: booking.fitnessClass.title,
+        instructorName: booking.fitnessClass.instructor.name,
+        startsAt: booking.fitnessClass.startsAt,
+        endsAt: booking.fitnessClass.endsAt,
+        room: booking.fitnessClass.room ?? "",
       }).catch(console.error);
     }
 

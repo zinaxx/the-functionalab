@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: "Admin — Classes" };
 
 export default async function AdminClassesPage() {
   const [classes, instructors, members] = await Promise.all([
-    prisma.yogaClass.findMany({
+    prisma.fitnessClass.findMany({
       include: {
         instructor: true,
         _count: { select: { bookings: { where: { status: "CONFIRMED" } } } },

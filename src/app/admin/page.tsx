@@ -23,7 +23,7 @@ export default async function AdminPage() {
   ] = await Promise.all([
     prisma.user.count({ where: { role: "USER" } }).catch((e) => { console.error("admin error:", e.message); return 0; }),
     prisma.membership.count({ where: { status: "ACTIVE" } }).catch(() => 0),
-    prisma.yogaClass.count({
+    prisma.fitnessClass.count({
       where: { startsAt: { gte: weekStart, lte: weekEnd }, status: "SCHEDULED" },
     }).catch(() => 0),
     prisma.booking.count({
@@ -37,7 +37,7 @@ export default async function AdminPage() {
       where: { status: "CONFIRMED" },
       include: {
         user: true,
-        yogaClass: { include: { instructor: true } },
+        fitnessClass: { include: { instructor: true } },
       },
       orderBy: { createdAt: "desc" },
       take: 8,
@@ -88,10 +88,10 @@ export default async function AdminPage() {
               >
                 <div className="min-w-0 flex-1">
                   <p className="font-medium text-white truncate">{booking.user.name ?? booking.user.email}</p>
-                  <p className="text-stone-500 text-xs truncate">{booking.yogaClass.title}</p>
+                  <p className="text-stone-500 text-xs truncate">{booking.fitnessClass.title}</p>
                 </div>
                 <div className="text-right shrink-0 ml-4">
-                  <p className="text-stone-300">{booking.yogaClass.instructor.name}</p>
+                  <p className="text-stone-300">{booking.fitnessClass.instructor.name}</p>
                   <p className="text-xs text-stone-500">
                     {new Date(booking.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
                   </p>

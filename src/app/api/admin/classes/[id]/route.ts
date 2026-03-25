@@ -20,7 +20,7 @@ export async function PUT(
     const body = await request.json();
     const { title, description, style, level, instructorId, startsAt, endsAt, durationMins, capacity, room, creditCost } = body;
 
-    const cls = await prisma.yogaClass.update({
+    const cls = await prisma.fitnessClass.update({
       where: { id: params.id },
       data: {
         title,
@@ -52,7 +52,7 @@ export async function DELETE(
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
-    await prisma.yogaClass.delete({ where: { id: params.id } });
+    await prisma.fitnessClass.delete({ where: { id: params.id } });
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error(error);

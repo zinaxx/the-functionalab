@@ -23,10 +23,10 @@ export default async function DashboardPage() {
     where: {
       userId: dbUser.id,
       status: "CONFIRMED",
-      yogaClass: { startsAt: { gte: new Date() } },
+      fitnessClass: { startsAt: { gte: new Date() } },
     },
-    include: { yogaClass: { include: { instructor: true } } },
-    orderBy: { yogaClass: { startsAt: "asc" } },
+    include: { fitnessClass: { include: { instructor: true } } },
+    orderBy: { fitnessClass: { startsAt: "asc" } },
     take: 5,
   });
 
@@ -127,24 +127,24 @@ export default async function DashboardPage() {
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <span
-                        className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium font-body ${CLASS_STYLE_COLORS[booking.yogaClass.style]}`}
+                        className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium font-body ${CLASS_STYLE_COLORS[booking.fitnessClass.style]}`}
                       >
-                        {CLASS_STYLE_LABELS[booking.yogaClass.style]}
+                        {CLASS_STYLE_LABELS[booking.fitnessClass.style]}
                       </span>
                     </div>
                     <h3 className="font-body font-medium text-white group-hover:text-[#fd5227] transition-colors">
-                      {booking.yogaClass.title}
+                      {booking.fitnessClass.title}
                     </h3>
                     <p className="font-body text-sm text-stone-500 mt-0.5">
-                      {booking.yogaClass.instructor.name}
+                      {booking.fitnessClass.instructor.name}
                     </p>
                   </div>
                   <div className="text-right shrink-0">
                     <p className="font-body text-sm font-medium text-stone-300">
-                      {formatClassTime(booking.yogaClass.startsAt, booking.yogaClass.endsAt)}
+                      {formatClassTime(booking.fitnessClass.startsAt, booking.fitnessClass.endsAt)}
                     </p>
-                    {booking.yogaClass.room && (
-                      <p className="font-body text-xs text-stone-500 mt-0.5">{booking.yogaClass.room}</p>
+                    {booking.fitnessClass.room && (
+                      <p className="font-body text-xs text-stone-500 mt-0.5">{booking.fitnessClass.room}</p>
                     )}
                   </div>
                 </div>

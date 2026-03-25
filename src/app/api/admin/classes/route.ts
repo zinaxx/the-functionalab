@@ -17,7 +17,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { title, description, style, level, instructorId, startsAt, endsAt, durationMins, capacity, room, creditCost } = body;
 
-    const cls = await prisma.yogaClass.create({
+    const cls = await prisma.fitnessClass.create({
       data: {
         title,
         description,

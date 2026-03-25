@@ -19,7 +19,7 @@ export async function DELETE(
     const booking = await prisma.booking.findUnique({
       where: { id: params.id },
       include: {
-        yogaClass: { include: { instructor: true } },
+        fitnessClass: { include: { instructor: true } },
         user: true,
       },
     });
@@ -31,7 +31,7 @@ export async function DELETE(
     const settings = await prisma.studioSettings.findUnique({ where: { id: "default" } });
     const windowHours = settings?.cancellationWindowHours ?? 12;
 
-    const canRefund = isCancellable(booking.yogaClass.startsAt, windowHours);
+    const canRefund = isCancellable(booking.fitnessClass.startsAt, windowHours);
     const newStatus = canRefund ? "CANCELLED" : "LATE_CANCELLED";
 
     // Cancel booking
@@ -61,7 +61,7 @@ export async function DELETE(
       });
 
       const waitingUser = firstWaiting.user;
-      const creditCost = hasActiveMembership ? 0 : booking.yogaClass.creditCost;
+      const creditCost = hasActiveMembership ? 0 : booking.fitnessClass.creditCost;
 
       await prisma.booking.upsert({
         where: { userId_classId: { userId: firstWaiting.userId, classId: booking.classId } },
@@ -97,11 +97,11 @@ export async function DELETE(
       sendBookingConfirmedEmail({
         userName: waitingUser.name ?? "",
         userEmail: waitingUser.email,
-        className: booking.yogaClass.title,
-        instructorName: booking.yogaClass.instructor.name,
-        startsAt: booking.yogaClass.startsAt,
-        endsAt: booking.yogaClass.endsAt,
-        room: booking.yogaClass.room ?? "",
+        className: booking.fitnessClass.title,
+        instructorName: booking.fitnessClass.instructor.name,
+        startsAt: booking.fitnessClass.startsAt,
+        endsAt: booking.fitnessClass.endsAt,
+        room: booking.fitnessClass.room ?? "",
       }).catch(console.error);
     }
 
@@ -110,11 +110,11 @@ export async function DELETE(
       sendLateCancelEmail({
         userName: dbUser.name ?? "",
         userEmail: dbUser.email,
-        className: booking.yogaClass.title,
-        instructorName: booking.yogaClass.instructor.name,
-        startsAt: booking.yogaClass.startsAt,
-        endsAt: booking.yogaClass.endsAt,
-        room: booking.yogaClass.room ?? "",
+        className: booking.fitnessClass.title,
+        instructorName: booking.fitnessClass.instructor.name,
+        startsAt: booking.fitnessClass.startsAt,
+        endsAt: booking.fitnessClass.endsAt,
+        room: booking.fitnessClass.room ?? "",
       }).catch(console.error);
     }
 

@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 async function getUpcomingClasses() {
   try {
-    return await prisma.yogaClass.findMany({
+    return await prisma.fitnessClass.findMany({
       where: {
         startsAt: { gte: new Date(), lte: addDays(new Date(), 3) },
         status: "SCHEDULED",

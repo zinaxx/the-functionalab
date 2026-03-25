@@ -1,7 +1,7 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { format, differenceInHours, isPast } from "date-fns";
-import type { ClassStyle, ClassLevel, YogaClassWithDetails } from "@/types";
+import type { ClassStyle, ClassLevel, FitnessClassWithDetails } from "@/types";
 
 // ─── Tailwind class helper (shadcn/ui) ──────────────────────
 
@@ -62,8 +62,8 @@ export function isLateCancelWindow(
 }
 
 /** Returns a human-readable spots label */
-export function spotsLabel(yogaClass: YogaClassWithDetails): string {
-  const { spotsLeft, capacity } = yogaClass;
+export function spotsLabel(fitnessClass: FitnessClassWithDetails): string {
+  const { spotsLeft, capacity } = fitnessClass;
   if (spotsLeft <= 0) return "Full";
   if (spotsLeft <= 3) return `${spotsLeft} spot${spotsLeft === 1 ? "" : "s"} left`;
   return `${spotsLeft}/${capacity} spots`;

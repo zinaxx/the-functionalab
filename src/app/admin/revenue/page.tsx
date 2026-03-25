@@ -35,7 +35,7 @@ export default async function AdminRevenuePage() {
     _count: { classId: true },
   }).catch(() => []);
 
-  const styleBookings = await prisma.yogaClass.findMany({
+  const styleBookings = await prisma.fitnessClass.findMany({
     where: { id: { in: styleDistribution.map((s) => s.classId) } },
     select: { id: true, style: true },
   }).catch(() => []);

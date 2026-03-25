@@ -18,7 +18,7 @@ export async function POST(
   if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
-    const yogaClass = await prisma.yogaClass.findUnique({
+    const fitnessClass = await prisma.fitnessClass.findUnique({
       where: { id: params.id },
       include: {
         bookings: {
@@ -28,16 +28,16 @@ export async function POST(
       },
     });
 
-    if (!yogaClass) return NextResponse.json({ error: "Class not found" }, { status: 404 });
-    if (yogaClass.status === "CANCELLED") return NextResponse.json({ error: "Already cancelled" }, { status: 400 });
+    if (!fitnessClass) return NextResponse.json({ error: "Class not found" }, { status: 404 });
+    if (fitnessClass.status === "CANCELLED") return NextResponse.json({ error: "Already cancelled" }, { status: 400 });
 
     // Cancel class + refund credits for all confirmed bookings
-    await prisma.yogaClass.update({
+    await prisma.fitnessClass.update({
       where: { id: params.id },
       data: { status: "CANCELLED" },
     });
 
-    for (const booking of yogaClass.bookings) {
+    for (const booking of fitnessClass.bookings) {
       await prisma.booking.update({
         where: { id: booking.id },
         data: { status: "CANCELLED", cancelledAt: new Date(), cancelReason: "Class cancelled by studio" },
@@ -52,17 +52,17 @@ export async function POST(
     }
 
     // Notify all affected students
-    for (const booking of yogaClass.bookings) {
+    for (const booking of fitnessClass.bookings) {
       sendClassCancelledEmail({
         userName: booking.user.name ?? "",
         userEmail: booking.user.email,
-        className: yogaClass.title,
-        startsAt: yogaClass.startsAt,
+        className: fitnessClass.title,
+        startsAt: fitnessClass.startsAt,
         creditsRefunded: booking.creditsUsed,
       }).catch(console.error);
     }
 
-    return NextResponse.json({ success: true, notified: yogaClass.bookings.length });
+    return NextResponse.json({ success: true, notified: fitnessClass.bookings.length });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

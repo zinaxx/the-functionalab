@@ -32,10 +32,10 @@ interface Props {
 export function BookingsClient({ bookings }: Props) {
   const now = new Date();
   const upcoming = bookings.filter(
-    (b) => b.status === "CONFIRMED" && !isPast(new Date(b.yogaClass.startsAt))
+    (b) => b.status === "CONFIRMED" && !isPast(new Date(b.fitnessClass.startsAt))
   );
   const past = bookings.filter(
-    (b) => isPast(new Date(b.yogaClass.startsAt)) || b.status !== "CONFIRMED"
+    (b) => isPast(new Date(b.fitnessClass.startsAt)) || b.status !== "CONFIRMED"
   );
 
   return (
@@ -84,7 +84,7 @@ function UpcomingBookingCard({ booking }: { booking: BookingWithClass }) {
   const router = useRouter();
   const { toast } = useToast();
 
-  const isLate = isLateCancelWindow(new Date(booking.yogaClass.startsAt));
+  const isLate = isLateCancelWindow(new Date(booking.fitnessClass.startsAt));
 
   const handleCancel = async () => {
     setLoading(true);
@@ -117,8 +117,8 @@ function UpcomingBookingCard({ booking }: { booking: BookingWithClass }) {
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
             <div className="flex items-center gap-2 mb-1.5">
-              <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium font-body ${CLASS_STYLE_COLORS[booking.yogaClass.style]}`}>
-                {CLASS_STYLE_LABELS[booking.yogaClass.style]}
+              <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium font-body ${CLASS_STYLE_COLORS[booking.fitnessClass.style]}`}>
+                {CLASS_STYLE_LABELS[booking.fitnessClass.style]}
               </span>
               <Badge variant="outline" className="text-xs text-[#fd5227] border-[#fd5227]/30 bg-[#fd5227]/10">
                 Confirmed
@@ -126,14 +126,14 @@ function UpcomingBookingCard({ booking }: { booking: BookingWithClass }) {
             </div>
             <Link href={`/classes/${booking.classId}`} className="block">
               <h3 className="font-body font-medium text-white hover:text-[#fd5227] transition-colors">
-                {booking.yogaClass.title}
+                {booking.fitnessClass.title}
               </h3>
             </Link>
             <p className="font-body text-sm text-stone-500 mt-0.5">
-              {booking.yogaClass.instructor.name}
+              {booking.fitnessClass.instructor.name}
             </p>
             <p className="font-body text-sm text-stone-400 mt-1">
-              {formatClassTime(new Date(booking.yogaClass.startsAt), new Date(booking.yogaClass.endsAt))}
+              {formatClassTime(new Date(booking.fitnessClass.startsAt), new Date(booking.fitnessClass.endsAt))}
             </p>
           </div>
           <Button
@@ -153,7 +153,7 @@ function UpcomingBookingCard({ booking }: { booking: BookingWithClass }) {
             <DialogTitle className="text-white">Cancel booking?</DialogTitle>
             <DialogDescription asChild>
               <div>
-                <p className="mb-3 text-stone-400">You&apos;re about to cancel <strong className="text-white">{booking.yogaClass.title}</strong>.</p>
+                <p className="mb-3 text-stone-400">You&apos;re about to cancel <strong className="text-white">{booking.fitnessClass.title}</strong>.</p>
                 {isLate && (
                   <div className="flex items-start gap-2 p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl text-amber-400 text-sm">
                     <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0" />
@@ -194,17 +194,17 @@ function PastBookingCard({ booking }: { booking: BookingWithClass }) {
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
           <div className="flex items-center gap-2 mb-1.5">
-            <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium font-body ${CLASS_STYLE_COLORS[booking.yogaClass.style]}`}>
-              {CLASS_STYLE_LABELS[booking.yogaClass.style]}
+            <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium font-body ${CLASS_STYLE_COLORS[booking.fitnessClass.style]}`}>
+              {CLASS_STYLE_LABELS[booking.fitnessClass.style]}
             </span>
             <Badge variant="outline" className={`text-xs ${config.class}`}>
               {config.label}
             </Badge>
           </div>
-          <h3 className="font-body font-medium text-stone-300">{booking.yogaClass.title}</h3>
-          <p className="font-body text-sm text-stone-500 mt-0.5">{booking.yogaClass.instructor.name}</p>
+          <h3 className="font-body font-medium text-stone-300">{booking.fitnessClass.title}</h3>
+          <p className="font-body text-sm text-stone-500 mt-0.5">{booking.fitnessClass.instructor.name}</p>
           <p className="font-body text-sm text-stone-500 mt-1">
-            {formatClassTime(new Date(booking.yogaClass.startsAt), new Date(booking.yogaClass.endsAt))}
+            {formatClassTime(new Date(booking.fitnessClass.startsAt), new Date(booking.fitnessClass.endsAt))}
           </p>
         </div>
       </div>

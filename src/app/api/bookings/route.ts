@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     const dbUser = await getOrCreateDbUser(user);
 
     // Get class with booking count
-    const yogaClass = await prisma.yogaClass.findUnique({
+    const fitnessClass = await prisma.fitnessClass.findUnique({
       where: { id: classId },
       include: {
         instructor: true,
@@ -24,9 +24,9 @@ export async function POST(request: Request) {
       },
     });
 
-    if (!yogaClass) return NextResponse.json({ error: "Class not found" }, { status: 404 });
-    if (yogaClass.status === "CANCELLED") return NextResponse.json({ error: "Class is cancelled" }, { status: 400 });
-    if (new Date(yogaClass.startsAt) < new Date()) return NextResponse.json({ error: "Class has already started" }, { status: 400 });
+    if (!fitnessClass) return NextResponse.json({ error: "Class not found" }, { status: 404 });
+    if (fitnessClass.status === "CANCELLED") return NextResponse.json({ error: "Class is cancelled" }, { status: 400 });
+    if (new Date(fitnessClass.startsAt) < new Date()) return NextResponse.json({ error: "Class has already started" }, { status: 400 });
 
     // Check for existing booking
     const existing = await prisma.booking.findUnique({
@@ -35,12 +35,12 @@ export async function POST(request: Request) {
     if (existing) return NextResponse.json({ error: "Already booked" }, { status: 409 });
 
     // Check capacity
-    const spotsLeft = yogaClass.capacity - yogaClass._count.bookings;
+    const spotsLeft = fitnessClass.capacity - fitnessClass._count.bookings;
     if (spotsLeft <= 0) return NextResponse.json({ error: "Class is full" }, { status: 400 });
 
     // Check credits / membership
     const hasActiveMembership = dbUser.membership?.status === "ACTIVE";
-    if (!hasActiveMembership && dbUser.creditBalance < yogaClass.creditCost) {
+    if (!hasActiveMembership && dbUser.creditBalance < fitnessClass.creditCost) {
       return NextResponse.json({ error: "Insufficient credits" }, { status: 400 });
     }
 
@@ -49,7 +49,7 @@ export async function POST(request: Request) {
       data: {
         userId: dbUser.id,
         classId,
-        creditsUsed: hasActiveMembership ? 0 : yogaClass.creditCost,
+        creditsUsed: hasActiveMembership ? 0 : fitnessClass.creditCost,
         status: "CONFIRMED",
       },
     });
@@ -57,7 +57,7 @@ export async function POST(request: Request) {
     if (!hasActiveMembership) {
       await prisma.user.update({
         where: { id: dbUser.id },
-        data: { creditBalance: { decrement: yogaClass.creditCost } },
+        data: { creditBalance: { decrement: fitnessClass.creditCost } },
       });
     }
 
@@ -65,11 +65,11 @@ export async function POST(request: Request) {
     sendBookingConfirmedEmail({
       userName: dbUser.name ?? "",
       userEmail: dbUser.email,
-      className: yogaClass.title,
-      instructorName: yogaClass.instructor.name,
-      startsAt: yogaClass.startsAt,
-      endsAt: yogaClass.endsAt,
-      room: yogaClass.room ?? "",
+      className: fitnessClass.title,
+      instructorName: fitnessClass.instructor.name,
+      startsAt: fitnessClass.startsAt,
+      endsAt: fitnessClass.endsAt,
+      room: fitnessClass.room ?? "",
     }).catch(console.error);
 
     return NextResponse.json({ success: true, data: booking });

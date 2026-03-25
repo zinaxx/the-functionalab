@@ -79,7 +79,7 @@ export async function GET(request: Request) {
   }
 
   // Find the furthest-ahead scheduled class
-  const lastClass = await prisma.yogaClass.findFirst({
+  const lastClass = await prisma.fitnessClass.findFirst({
     where: { status: "SCHEDULED" },
     orderBy: { startsAt: "desc" },
     select: { startsAt: true },
@@ -98,7 +98,7 @@ export async function GET(request: Request) {
   // Check we're not about to duplicate — skip if that Monday's classes already exist
   const weekMonday = startOfDay(generateFrom);
   const weekSunday = addDays(weekMonday, 7);
-  const existing = await prisma.yogaClass.count({
+  const existing = await prisma.fitnessClass.count({
     where: { startsAt: { gte: weekMonday, lt: weekSunday }, status: "SCHEDULED" },
   });
 
@@ -121,7 +121,7 @@ export async function GET(request: Request) {
     );
     const endsAt = addMinutes(startsAt, slot.durationMins);
 
-    await prisma.yogaClass.create({
+    await prisma.fitnessClass.create({
       data: {
         title:        CLASS_TITLES[slot.style],
         style:        slot.style,

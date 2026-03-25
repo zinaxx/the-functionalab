@@ -19,14 +19,14 @@ export async function GET(request: Request) {
   const bookings = await prisma.booking.findMany({
     where: {
       status: "CONFIRMED",
-      yogaClass: {
+      fitnessClass: {
         startsAt: { gte: in24h, lte: in25h },
         status: "SCHEDULED",
       },
     },
     include: {
       user: true,
-      yogaClass: { include: { instructor: true } },
+      fitnessClass: { include: { instructor: true } },
     },
   });
 
@@ -36,11 +36,11 @@ export async function GET(request: Request) {
       await sendClassReminderEmail({
         userName: booking.user.name ?? "",
         userEmail: booking.user.email,
-        className: booking.yogaClass.title,
-        instructorName: booking.yogaClass.instructor.name,
-        startsAt: booking.yogaClass.startsAt,
-        endsAt: booking.yogaClass.endsAt,
-        room: booking.yogaClass.room ?? "",
+        className: booking.fitnessClass.title,
+        instructorName: booking.fitnessClass.instructor.name,
+        startsAt: booking.fitnessClass.startsAt,
+        endsAt: booking.fitnessClass.endsAt,
+        room: booking.fitnessClass.room ?? "",
       });
       sent++;
     } catch (err) {

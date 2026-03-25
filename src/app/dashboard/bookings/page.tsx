@@ -17,8 +17,8 @@ export default async function BookingsPage() {
 
   const bookings = await prisma.booking.findMany({
     where: { userId: dbUser.id },
-    include: { yogaClass: { include: { instructor: true } } },
-    orderBy: { yogaClass: { startsAt: "desc" } },
+    include: { fitnessClass: { include: { instructor: true } } },
+    orderBy: { fitnessClass: { startsAt: "desc" } },
   });
 
   return (

@@ -344,7 +344,7 @@ async function main() {
   // ── Clear existing data ──
   await prisma.waitlistEntry.deleteMany();
   await prisma.booking.deleteMany();
-  await prisma.yogaClass.deleteMany();
+  await prisma.fitnessClass.deleteMany();
   await prisma.membership.deleteMany();
   await prisma.payment.deleteMany();
   await prisma.instructor.deleteMany();
@@ -391,7 +391,7 @@ async function main() {
       );
       const endsAt = addMinutes(startsAt, template.durationMins);
 
-      await prisma.yogaClass.create({
+      await prisma.fitnessClass.create({
         data: {
           title: template.title,
           description: template.description,

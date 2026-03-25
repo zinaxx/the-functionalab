@@ -21,10 +21,10 @@ import {
   spotsLabel,
 } from "@/lib/utils";
 import type { ClassStyle, ClassLevel } from "@prisma/client";
-import type { YogaClassWithDetails } from "@/types";
+import type { FitnessClassWithDetails } from "@/types";
 
 interface Props {
-  classes: YogaClassWithDetails[];
+  classes: FitnessClassWithDetails[];
   instructors: { id: string; name: string }[];
   styles: ClassStyle[];
   levels: ClassLevel[];
@@ -51,7 +51,7 @@ export function ScheduleClient({ classes, instructors, styles, levels }: Props) 
 
   // Group by day
   const grouped = useMemo(() => {
-    const map = new Map<string, YogaClassWithDetails[]>();
+    const map = new Map<string, FitnessClassWithDetails[]>();
     for (const cls of filtered) {
       const key = format(cls.startsAt, "yyyy-MM-dd");
       if (!map.has(key)) map.set(key, []);
@@ -186,7 +186,7 @@ export function ScheduleClient({ classes, instructors, styles, levels }: Props) 
   );
 }
 
-function ClassCard({ cls }: { cls: YogaClassWithDetails }) {
+function ClassCard({ cls }: { cls: FitnessClassWithDetails }) {
   const isFull = cls.spotsLeft <= 0;
   const isAlmostFull = cls.spotsLeft > 0 && cls.spotsLeft <= 3;
 

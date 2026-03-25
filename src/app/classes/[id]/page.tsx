@@ -20,7 +20,7 @@ interface Props {
 }
 
 async function getClass(id: string) {
-  return prisma.yogaClass.findUnique({
+  return prisma.fitnessClass.findUnique({
     where: { id },
     include: {
       instructor: true,

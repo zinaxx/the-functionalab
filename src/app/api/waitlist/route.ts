@@ -14,7 +14,7 @@ export async function POST(request: Request) {
 
     const dbUser = await getOrCreateDbUser(user);
 
-    const yogaClass = await prisma.yogaClass.findUnique({
+    const fitnessClass = await prisma.fitnessClass.findUnique({
       where: { id: classId },
       include: {
         _count: {
@@ -26,12 +26,12 @@ export async function POST(request: Request) {
       },
     });
 
-    if (!yogaClass) return NextResponse.json({ error: "Class not found" }, { status: 404 });
-    if (yogaClass.status === "CANCELLED") return NextResponse.json({ error: "Class is cancelled" }, { status: 400 });
-    if (new Date(yogaClass.startsAt) < new Date()) return NextResponse.json({ error: "Class has already started" }, { status: 400 });
+    if (!fitnessClass) return NextResponse.json({ error: "Class not found" }, { status: 404 });
+    if (fitnessClass.status === "CANCELLED") return NextResponse.json({ error: "Class is cancelled" }, { status: 400 });
+    if (new Date(fitnessClass.startsAt) < new Date()) return NextResponse.json({ error: "Class has already started" }, { status: 400 });
 
     // Check there's actually no spot left
-    const spotsLeft = yogaClass.capacity - yogaClass._count.bookings;
+    const spotsLeft = fitnessClass.capacity - fitnessClass._count.bookings;
     if (spotsLeft > 0) return NextResponse.json({ error: "Class still has spots — book directly" }, { status: 400 });
 
     // Check not already on waitlist
@@ -43,7 +43,7 @@ export async function POST(request: Request) {
     // Check waitlist max size
     const settings = await prisma.studioSettings.findUnique({ where: { id: "default" } });
     const maxSize = settings?.maxWaitlistSize ?? 10;
-    if (yogaClass._count.waitlist >= maxSize) {
+    if (fitnessClass._count.waitlist >= maxSize) {
       return NextResponse.json({ error: "Waitlist is full" }, { status: 400 });
     }
 
@@ -51,7 +51,7 @@ export async function POST(request: Request) {
       data: {
         userId: dbUser.id,
         classId,
-        position: yogaClass._count.waitlist + 1,
+        position: fitnessClass._count.waitlist + 1,
       },
     });
 

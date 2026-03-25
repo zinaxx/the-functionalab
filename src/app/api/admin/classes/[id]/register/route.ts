@@ -23,7 +23,7 @@ export async function POST(
     const { userId } = await request.json();
     if (!userId) return NextResponse.json({ error: "userId required" }, { status: 400 });
 
-    const yogaClass = await prisma.yogaClass.findUnique({
+    const fitnessClass = await prisma.fitnessClass.findUnique({
       where: { id: params.id },
       include: {
         instructor: true,
@@ -31,8 +31,8 @@ export async function POST(
       },
     });
 
-    if (!yogaClass) return NextResponse.json({ error: "Class not found" }, { status: 404 });
-    if (yogaClass.status === "CANCELLED") return NextResponse.json({ error: "Class is cancelled" }, { status: 400 });
+    if (!fitnessClass) return NextResponse.json({ error: "Class not found" }, { status: 404 });
+    if (fitnessClass.status === "CANCELLED") return NextResponse.json({ error: "Class is cancelled" }, { status: 400 });
 
     const existingBooking = await prisma.booking.findUnique({
       where: { userId_classId: { userId, classId: params.id } },
@@ -49,7 +49,7 @@ export async function POST(
       select: { name: true, email: true },
     });
 
-    const spotsLeft = yogaClass.capacity - yogaClass._count.bookings;
+    const spotsLeft = fitnessClass.capacity - fitnessClass._count.bookings;
 
     if (spotsLeft <= 0) {
       // Class is full — add to waitlist
@@ -79,11 +79,11 @@ export async function POST(
       sendBookingConfirmedEmail({
         userName: member.name ?? "",
         userEmail: member.email,
-        className: yogaClass.title,
-        instructorName: yogaClass.instructor.name,
-        startsAt: yogaClass.startsAt,
-        endsAt: yogaClass.endsAt,
-        room: yogaClass.room ?? "",
+        className: fitnessClass.title,
+        instructorName: fitnessClass.instructor.name,
+        startsAt: fitnessClass.startsAt,
+        endsAt: fitnessClass.endsAt,
+        room: fitnessClass.room ?? "",
       }).catch(console.error);
     }
 
