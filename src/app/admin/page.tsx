@@ -1,7 +1,7 @@
 export const dynamic = 'force-dynamic';
 import { prisma } from "@/lib/prisma";
 import { startOfMonth, endOfMonth, startOfWeek, endOfWeek } from "date-fns";
-import { Users, Calendar, TrendingUp, CreditCard } from "lucide-react";
+import { Users, Calendar, TrendingUp } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Admin — Overview" };
@@ -18,7 +18,6 @@ export default async function AdminPage() {
     activeMembers,
     classesThisWeek,
     bookingsThisMonth,
-    revenueThisMonth,
     recentBookings,
   ] = await Promise.all([
     prisma.user.count({ where: { role: "USER" } }).catch((e) => { console.error("admin error:", e.message); return 0; }),
@@ -29,10 +28,6 @@ export default async function AdminPage() {
     prisma.booking.count({
       where: { status: "CONFIRMED", createdAt: { gte: monthStart, lte: monthEnd } },
     }).catch(() => 0),
-    prisma.payment.aggregate({
-      _sum: { amount: true },
-      where: { status: "SUCCEEDED", createdAt: { gte: monthStart, lte: monthEnd } },
-    }).catch(() => ({ _sum: { amount: null } })),
     prisma.booking.findMany({
       where: { status: "CONFIRMED" },
       include: {
@@ -44,18 +39,10 @@ export default async function AdminPage() {
     }).catch(() => []),
   ]);
 
-  const revenueAmount = revenueThisMonth._sum.amount ?? 0;
-
   const stats = [
     { label: "Total members", value: totalMembers, icon: Users, sub: `${activeMembers} with active membership` },
     { label: "Classes this week", value: classesThisWeek, icon: Calendar, sub: "Scheduled" },
     { label: "Bookings this month", value: bookingsThisMonth, icon: TrendingUp, sub: "Confirmed" },
-    {
-      label: "Revenue this month",
-      value: new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(revenueAmount / 100),
-      icon: CreditCard,
-      sub: "From payments",
-    },
   ];
 
   return (

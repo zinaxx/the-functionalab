@@ -2,13 +2,12 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getOrCreateDbUser } from "@/lib/get-or-create-user";
-import { LayoutDashboard, BookOpen, Users, BarChart3 } from "lucide-react";
+import { LayoutDashboard, BookOpen, Users } from "lucide-react";
 
 const navItems = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard },
   { href: "/admin/classes", label: "Classes", icon: BookOpen },
   { href: "/admin/members", label: "Members", icon: Users },
-  { href: "/admin/revenue", label: "Revenue", icon: BarChart3 },
 ];
 
 export default async function AdminLayout({
