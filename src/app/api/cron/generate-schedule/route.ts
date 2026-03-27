@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { ClassStyle, ClassLevel } from "@prisma/client";
 import { addDays, addMinutes, setHours, setMinutes, startOfDay, nextMonday } from "date-fns";
+import { createClient } from "@/lib/supabase/server";
 
-// Called by Vercel Cron: every Monday at 6am UTC
-// vercel.json: { "path": "/api/cron/generate-schedule", "schedule": "0 6 * * 1" }
+// Called manually from the admin panel (POST) or via Vercel Cron (GET)
 
 // ─── Weekly template (mirrors the JPEG schedule) ──────────────────────────────
 // [style, instructorName, dayOffset (0=Mon…5=Sat), hour, minute, durationMins]
@@ -72,12 +72,7 @@ const CLASS_TITLES: Record<ClassStyle, string> = {
   STEP:             "Step",
 };
 
-export async function GET(request: Request) {
-  const authHeader = request.headers.get("authorization");
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
+async function generateNextWeek() {
   // Find the furthest-ahead scheduled class
   const lastClass = await prisma.fitnessClass.findFirst({
     where: { status: "SCHEDULED" },
@@ -138,9 +133,26 @@ export async function GET(request: Request) {
     created++;
   }
 
-  return NextResponse.json({
-    success: true,
-    created,
-    week: weekMonday.toISOString().split("T")[0],
-  });
+  return { created, week: weekMonday.toISOString().split("T")[0] };
+}
+
+// GET — called by Vercel Cron (kept for future Pro plan upgrade)
+export async function GET(request: Request) {
+  const authHeader = request.headers.get("authorization");
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  const result = await generateNextWeek();
+  return NextResponse.json({ success: true, ...result });
+}
+
+// POST — called from the admin panel button
+export async function POST() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user || user.email !== process.env.ADMIN_EMAIL) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  const result = await generateNextWeek();
+  return NextResponse.json({ success: true, ...result });
 }

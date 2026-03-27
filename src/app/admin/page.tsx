@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { startOfMonth, endOfMonth, startOfWeek, endOfWeek } from "date-fns";
 import { Users, Calendar, TrendingUp } from "lucide-react";
 import type { Metadata } from "next";
+import GenerateScheduleButton from "@/components/admin/GenerateScheduleButton";
 
 export const metadata: Metadata = { title: "Admin — Overview" };
 
@@ -47,7 +48,10 @@ export default async function AdminPage() {
 
   return (
     <div className="space-y-8">
-      <h1 className="font-display text-4xl font-light text-white">Overview</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="font-display text-4xl font-light text-white">Overview</h1>
+        <GenerateScheduleButton />
+      </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat) => (
